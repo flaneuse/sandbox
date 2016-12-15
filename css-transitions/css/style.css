@@ -1,0 +1,66 @@
+.container {
+  width: 890px;
+}
+
+#graphic {
+  padding-top: 60px;
+}
+
+
+
+
+#sections {
+  position: relative;
+  display: inline-block;
+  width: auto;
+  height: 100%;
+  top: 0px;
+  z-index: 90;
+  padding-bottom: 200px;
+}
+
+
+#afr-map {
+  width: 100%;
+  height: auto;
+  position: relative;
+  margin:0 auto;
+}
+
+#afr-map img{
+  position: absolute;
+  left:0;
+  -webkit-transition: opacity 1s ease-in forwards;
+  -moz-transition: opacity 1s ease-in forwards;
+  -o-transition: opacity 1s ease-in forwards;
+  transition: opacity 1s ease-in forwards;
+}
+
+
+
+@keyframes afrFadeInOut {
+  0% {
+  opacity:1;
+}
+45% {
+opacity:1;
+}
+55% {
+opacity:0;
+}
+100% {
+opacity:0;
+}
+}
+
+#afr-map img.top {
+animation-name: afrFadeInOut;
+animation-timing-function: ease-in;
+animation-iteration-count: 1;
+animation-duration: 8s;
+animation-direction: normal;
+}
+
+#afr-map img:hover {
+  transform: translate(-20%, -40%) scale(2);
+}
