@@ -30,10 +30,10 @@
 #afr-map img{
   position: absolute;
   left:0;
-  -webkit-transition: opacity 1s ease-in forwards;
-  -moz-transition: opacity 1s ease-in forwards;
-  -o-transition: opacity 1s ease-in forwards;
-  transition: opacity 1s ease-in forwards;
+  -webkit-transition: opacity 1s ease-in;
+  -moz-transition: opacity 1s ease-in;
+  -o-transition: opacity 1s ease-in;
+  transition: opacity 1s ease-in;
 }
 
 
@@ -57,8 +57,9 @@ opacity:0;
 animation-name: afrFadeInOut;
 animation-timing-function: ease-in;
 animation-iteration-count: 1;
-animation-duration: 8s;
+animation-duration: 2s;
 animation-direction: normal;
+animation-fill-mode: forwards;
 }
 
 #afr-map img:hover {
