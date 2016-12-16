@@ -1,5 +1,5 @@
-.container {
-  width: 890px;
+.container-fluid {
+  max-width: 890px;
 }
 
 #graphic {
@@ -30,12 +30,18 @@
 #afr-map img{
   position: absolute;
   left:0;
+
+
   -webkit-transition: opacity 1s ease-in;
   -moz-transition: opacity 1s ease-in;
   -o-transition: opacity 1s ease-in;
   transition: opacity 1s ease-in;
-}
 
+  -webkit-transition: transform 2s ease-in-out;
+  -moz-transition: transform 2s ease-in-out;
+  -o-transition: transform 2s ease-in-out;
+  transition: transform 2s ease-in-out;
+}
 
 
 @keyframes afrFadeInOut {
@@ -59,9 +65,9 @@ animation-timing-function: ease-in;
 animation-iteration-count: 1;
 animation-duration: 2s;
 animation-direction: normal;
-animation-fill-mode: forwards;
+/*animation-fill-mode: forwards;*/
 }
 
-#afr-map img:hover {
+#afr-map img.top:hover {
   transform: translate(-20%, -40%) scale(2);
 }
