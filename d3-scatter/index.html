@@ -25,6 +25,13 @@
   <link rel="stylesheet" href="/css/main.css">
 
   <style>
+
+
+  body{
+    font-family: "Oxygen", sans-serif;
+    font-weight: 300;
+  }
+
   .dot {
     stroke: #000;
     fill: #00f;
@@ -40,14 +47,10 @@
     stroke-width: 0;
   }
 
-  body{
-    font-family: "Oxygen", sans-serif;
-    font-weight: 300;
-  }
+
 
   .x.axis line {
-    fill: none;
-    stroke: #000;
+    display: none;
   }
   .x.axis text {
     font-size: 13px;
@@ -78,13 +81,14 @@
 <!-- <script src="./scripts/scatter.js" ></script> -->
 
 <script>
-
+// -- DEFINE CONSTANTS --
 // select current year
      var year = '2014';
 
 // radius of dots in pixels.
      var radius = 10;
 
+// -- INITIALIZE VARIABLES --
 // set dimensions of viz. w/ margins
      var margin = {top: 30, right: 0, bottom: 0, left: 250},
           width = 1000 - margin.left - margin.left,
@@ -108,6 +112,12 @@
      var yAxis = d3.axisLeft()
          .scale(y);
 
+// gridlines in x axis function
+         function make_x_gridlines() {
+           return d3.axisBottom(x)
+           .ticks(5)
+         }
+
 // front-matter text
      body.append("h2")
           .text("Age distribution of the world, " + year);
@@ -125,6 +135,7 @@
      body.append("div")
           .attr("class", "clearfix")
 
+// -- DATA --
 // import data as csv.
      d3.csv("data/DHS_stunted_unweighted.csv", function(error, data){
        if(error) throw error;
@@ -146,13 +157,13 @@
                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 // add the X gridlines
-            // svg.append("g")
-            //    .attr("class", "grid")
-            //        .attr("transform", "translate(0," + height + ")")
-            //        .call(make_x_gridlines()
-            //            .tickSize(-height)
-            //            .tickFormat("")
-            //        );
+            svg.append("g")
+               .attr("class", "grid")
+                   .attr("transform", "translate(0," + height + ")")
+                   .call(make_x_gridlines()
+                       .tickSize(-height)
+                       .tickFormat("")
+                   );
 
 // create dots.
           var dotGroup = svg.append("g")
@@ -169,8 +180,6 @@
                .attr("opacity", 0.2)
                 .transition()
                .duration(6000)
-              //  .data(y2)
-            // .enter().append("circle")
               .attr("cy", function(d) {return y(d.lvdzone)})
               .attr("r", radius)
               .attr("cx", function(d) {return x(d.avg/10)})
