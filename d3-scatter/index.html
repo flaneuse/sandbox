@@ -30,14 +30,16 @@
   body{
     font-family: "Oxygen", sans-serif;
     font-weight: 300;
+    color: #333;
   }
 
   .dot {
-    stroke: #000;
+    stroke: #333;
+    stroke-width: 0.5;
   }
 
   .natl {
-    stroke: #000;
+    stroke: #333;
     stroke-width: 1;
   }
 
@@ -52,22 +54,21 @@
   }
 
 
+  .axis path {
+    display:none;
+  }
+  .axis text {
+    font-size: 13px;
+    fill: #333;
+  }
 
   .x.axis line {
     display: none;
   }
-  .x.axis text {
-    font-size: 13px;
-  }
-  .axis path {
-    display:none;
-  }
   .y.axis line {
     display:none;
   }
-  .y.axis text {
-    font-size: 13px;
-  }
+
   </style>
 
 
@@ -207,8 +208,8 @@
                .attr("r", radius)
                .attr("fill", function(d) {return z(d.avg)})
                .attr("opacity", 1)
-              //  .transition()
-              //  .attr("opacity", 0.2)
+               .transition()
+               .attr("fill-opacity", 0.2)
               //   .transition()
               //  .duration(6000)
               // .attr("cy", function(d) {return y(d.lvdzone)})
