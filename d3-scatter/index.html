@@ -30,61 +30,85 @@
     fill: #00f;
   }
 
+  .grid line {
+    stroke: lightgrey;
+    stroke-opacity: 0.7;
+    shape-rendering: crispEdges;
+  }
+
+  .grid path {
+    stroke-width: 0;
+  }
+
+  body{
+    font-family: "Oxygen", sans-serif;
+    font-weight: 300;
+  }
+
   .x.axis line {
     fill: none;
     stroke: #000;
   }
   .x.axis text {
-       font-size: 13px;
+    font-size: 13px;
   }
   .axis path {
-       display:none;
+    display:none;
   }
   .y.axis line {
-       display:none;
+    display:none;
+  }
+  .y.axis text {
+    font-size: 13px;
   }
   </style>
 
 
 </head>
 
+<!-- start of body -->
 <body>
 <h1 class = "blueclass">test title</h1>
 
 
-<script src="https://d3js.org/d3.v3.min.js"></script>
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<!-- load Color Brewer -->
+<script src="https://d3js.org/d3-scale-chromatic.v0.3.js"></script>
 
 <!-- <script src="./scripts/scatter.js" ></script> -->
+
 <script>
 
-    // selectcurrent year
-     var year = '204';
+// select current year
+     var year = '2014';
 
-     // radius of dots in pixels.
+// radius of dots in pixels.
      var radius = 10;
 
-     // set
+// set dimensions of viz. w/ margins
      var margin = {top: 30, right: 0, bottom: 0, left: 250},
           width = 1000 - margin.left - margin.left,
           height = 450 - margin.top - margin.bottom;
 
      var body = d3.select("body");
 
-     var x = d3.scale.linear()
+// define scales (# pixels for each axis)
+     var x = d3.scaleLinear()
           .range([0, width]);
 
-     var y = d3.scale.ordinal()
-          .rangeBands([0, height], 0.2, 0);
+     var y = d3.scaleBand() // Port d3.scale.ordinal to .scaleBand; rangeBands to range w/ paddingInner arg.
+          .range([0, height])
+          .paddingInner(0.2);
 
-     var xAxis = d3.svg.axis()
+// define look of axis
+     var xAxis = d3.axisBottom()
           .scale(x)
-          .orient("top")
           .ticks(5, "%");
 
-     var yAxis = d3.svg.axis()
-          .scale(y)
-          .orient("left");
+     var yAxis = d3.axisLeft()
+         .scale(y);
 
+// front-matter text
      body.append("h2")
           .text("Age distribution of the world, " + year);
 
@@ -101,37 +125,58 @@
      body.append("div")
           .attr("class", "clearfix")
 
+// import data as csv.
      d3.csv("data/DHS_stunted_unweighted.csv", function(error, data){
        if(error) throw error;
 
-          var popData = data.filter(function(element) {return element.year != year});
+// filter the data
+          var popData = data.filter(function(element) {return element.year == year});
+          var y2 = data.filter(function(element) {return element.year == '2010'});
 
+// set the domain (data range) of data
           x.domain([0, d3.max(data, function(element) { return element.avg; })]);
 
           y.domain(popData.map(function(element) {return element.lvdzone}));
 
+// create the SVG object
           var svg = body.append("svg")
                .attr("width", width + margin.left + margin.right)
                .attr("height", height + margin.top + margin.bottom)
            .append("g")
                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-          var barGroup = svg.append("g")
+// add the X gridlines
+            // svg.append("g")
+            //    .attr("class", "grid")
+            //        .attr("transform", "translate(0," + height + ")")
+            //        .call(make_x_gridlines()
+            //            .tickSize(-height)
+            //            .tickFormat("")
+            //        );
+
+// create dots.
+          var dotGroup = svg.append("g")
                .attr("class", "dot");
 
-          barGroup.selectAll("dot")
-               .data(popData)
+          dotGroup.selectAll("dot")
+               .data(y2)
             .enter().append("circle")
-               //.attr("x", 0)
                .attr("cx", function(d) {return x(d.avg)})
                .attr("cy", function(d) {return y(d.lvdzone)})
                .attr("r", radius)
                .attr("opacity", 1)
                .transition()
+               .attr("opacity", 0.2)
+                .transition()
                .duration(6000)
-               .attr("cx", function(d) {return x(d.avg/10)})
-               .attr("opacity", 0.4);
+              //  .data(y2)
+            // .enter().append("circle")
+              .attr("cy", function(d) {return y(d.lvdzone)})
+              .attr("r", radius)
+              .attr("cx", function(d) {return x(d.avg/10)})
+              .attr("opacity", 1);
 
+// draw the axes
           svg.append("g")
                .call(xAxis)
                .attr("class", "x axis")
