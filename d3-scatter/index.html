@@ -150,11 +150,21 @@
      d3.csv("data/DHS_stunted_unweighted.csv", function(error, data){
        if(error) throw error;
 
-       console.log(data)
+       var nested = d3.nest()
+          .key(function(d) {return d.year;})
+          .sortKeys(d3.ascending)
+          .entries(data);
+
+          console.log(nested)
+
 
 // filter the data
           var popData = data.filter(function(element) {return element.year == year});
           var y2 = data.filter(function(element) {return element.year == '2010'});
+
+console.log(y2)
+          y2.sort(function(a,b) {return b.avg - a.avg;});
+          console.log(y2);
 
 // set the domain (data range) of data
           x.domain([0, d3.max(data, function(element) { return element.avg; })]);
