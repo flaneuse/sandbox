@@ -137,6 +137,8 @@
        .append("p")
           .text("age group");
 
+
+
      body.append("div")
           .attr("class", "top-label")
        .append("p")
@@ -181,6 +183,17 @@ console.log(y2)
            .append("g")
                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+
+               // image
+               var imgs = svg.selectAll("image").data([0]);
+               imgs.enter()
+                   .append("image")
+                   .attr("xlink:href", "test_map.png")
+                   .attr("x", "60")
+                   .attr("y", "60")
+                   .attr("width", "200px")
+                   .attr("height", "200px");
+
 // add the X gridlines
             svg.append("g")
                .attr("class", "grid")
@@ -214,7 +227,7 @@ console.log(y2)
                .data(y2)
             .enter().append("circle")
                .attr("cx", function(d) {return x(d.avg)})
-               .attr("cy", function(d) {return y(d.lvdzone)})
+               .attr("cy", function(d) {return y(d.lvdzone)+margin.top/2})
                .attr("r", radius)
                .attr("fill", function(d) {return z(d.avg)})
                .attr("opacity", 1)
@@ -232,7 +245,7 @@ console.log(y2)
                       .enter().append("circle")
           .transition()
           // .duration(4000)
-          .attr("cy", function(d) {return y(d.lvdzone)})
+          .attr("cy", function(d) {return y(d.lvdzone)+margin.top/2})
           .attr("r", radius)
           .attr("cx", function(d) {return x(d.avg)})
           .attr("fill", function(d) {return z(d.avg)});
