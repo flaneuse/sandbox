@@ -215,18 +215,28 @@
                    );
 
 // add reference line
-  var natlAvg = svg.append("g")
+  var natlAvg2010 = svg.append("g")
     .attr("class", "natl");
 
+  var natlAvg2014 = svg.append("g")
+      .attr("class", "natl");
 
-  natlAvg.selectAll("natl")
+
+  natlAvg2010.selectAll("natl")
       .data(data)
     .enter().append("line")
-  // .attr("class", "axis")
-  .attr("y1", 0)
-  .attr("y2", height + margin.top + margin.bottom)
-  .attr("x1", function(d) {return x(d.natl2010)})
-  .attr("x2", function(d) {return x(d.natl2010)});
+      .attr("y1", 0)
+      .attr("y2", height + margin.top + margin.bottom)
+      .attr("x1", function(d) {return x(d.natl2010)})
+      .attr("x2", function(d) {return x(d.natl2010)});
+
+      natlAvg2014.selectAll("natl")
+          .data(data)
+        .enter().append("line")
+          .attr("y1", 0)
+          .attr("y2", height + margin.top + margin.bottom)
+          .attr("x1", function(d) {return x(d.natl2014)})
+          .attr("x2", function(d) {return x(d.natl2014)});
 
 
   // create lines that connect the dots.
@@ -287,7 +297,8 @@
               .attr("fill-opacity", 1)
             .transition()
               .duration(4000)
-              .attr("cx", function(d) {return x(d.avg2014)});
+              .attr("cx", function(d) {return x(d.avg2014)})
+              .attr("fill", function(d) {return z(d.avg2014)});
 
 
 // draw the axes
