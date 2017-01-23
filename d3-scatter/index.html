@@ -200,9 +200,9 @@
                    .attr("x", d3.max(data, function(element) { return x(element.avg2010 * 1.03); }))
                    .attr("y", function(d) {return y(d.livelihood_zone)})
                    .attr("height", y.bandwidth())
-                   .attr("opacity", 0)
+                   .style("opacity", 0)
                 .transition(t1)
-                    .attr("opacity", 1);
+                    .style("opacity", 1);
 
 
 // add the X gridlines
@@ -254,12 +254,12 @@
                .attr("cx", function(d) {return x(d.natl2010)})
                .attr("cy", function(d) {return y(d.livelihood_zone)+y.bandwidth()/2})
                .attr("r", radius)
-               .attr("fill", function(d) {return z(d.natl2010)})
-               .attr("fill-opacity", 1)
+               .style("fill", function(d) {return z(d.natl2010)})
+               .style("fill-opacity", 1)
              .transition(t1)
                .duration(2000)
               .attr("cx", function(d) {return x(d.avg2010)})
-              .attr("fill", function(d) {return z(d.avg2010)})
+              .style("fill", function(d) {return z(d.avg2010)})
 
 // labels
 var pctLab = svg.append("g")
@@ -274,11 +274,11 @@ var pctLab = svg.append("g")
     .attr("y", function(d) {return y(d.livelihood_zone)+y.bandwidth()/2})
     .attr("dy", y.bandwidth()/4)
     .text(function(d) {return d3.format(".0%")(d.avg2010)})
-    .attr("opacity", 0)
+    .style("opacity", 0)
     .transition(t1)
       .delay(500)
       .duration(3500)
-      .attr("opacity", 1)
+      .style("opacity", 1)
 
 // draw the axes
           svg.append("g")
