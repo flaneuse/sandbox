@@ -144,6 +144,11 @@
            .ticks(5)
          }
 
+// -- TRANSITIONS --
+// enter livelihood zones!
+                   var t1 = d3.transition()
+                   .duration(4000);
+
 // front-matter text
      body.append("h2")
           .text("random text");
@@ -164,22 +169,6 @@
        if(error) throw error;
 
        lz = data.filter(function(d) {return d.livelihood_zone;});
-console.log(lz)
-      //  var nested = d3.nest()
-      //     .key(function(d) {return d.year;})
-      //     .sortKeys(d3.ascending)
-      //     .entries(data);
-       //
-      //     console.log(nested)
-
-
-// // filter the data
-//           var popData = data.filter(function(element) {return element.year == year});
-//           var y2 = data.filter(function(element) {return element.year == '2010'});
-//
-// console.log(y2)
-//           y2.sort(function(a,b) {return b.avg - a.avg;});
-//           console.log(y2);
 
 // set the domain (data range) of data
 // ! Note: should make more extendable by looking for the max in _either_ avg2010 or avg2014.
@@ -198,15 +187,18 @@ console.log(lz)
                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 
-               // image
+// images (lz icons)
                var imgs = svg.selectAll("image")
                   .data(lz)
                .enter().append("image")
                    .attr("xlink:href", function(d) {return "/img/" +  d.livelihood_zone + ".png"})
                    .attr("x", d3.max(data, function(element) { return x(element.avg2010 * 1.03); }))
                    .attr("y", function(d) {return y(d.livelihood_zone)})
-                  //  .attr("width", "200px")
-                   .attr("height", y.bandwidth());
+                   .attr("height", y.bandwidth())
+                   .attr("opacity", 0)
+                .transition(t1)
+                    .attr("opacity", 1);
+
 
 // add the X gridlines
             svg.append("g")
@@ -233,85 +225,28 @@ console.log(lz)
       .attr("x1", function(d) {return x(d.natl2010)})
       .attr("x2", function(d) {return x(d.natl2010)});
 
-      natlAvg2014.selectAll("natl")
-          .data(data)
-        .enter().append("line")
-          .attr("y1", 0)
-          .attr("y2", height + margin.top + margin.bottom)
-          .attr("x1", function(d) {return x(d.natl2014)})
-          .attr("x2", function(d) {return x(d.natl2014)});
 
-
-  // create lines that connect the dots.
-                var lineChange = svg.append("g")
-                  .attr("class", "change")
-
-                  lineChange.selectAll("change")
-                      .data(data)
-                    .enter().append("line")
-                  .attr("y1", function(d) {return y(d.livelihood_zone) + y.bandwidth()/2})
-                  .attr("y2", function(d) {return y(d.livelihood_zone) + y.bandwidth()/2})
-                  .attr("x1", function(d) {return x(d.avg2010)})
-                  .attr("x2", function(d) {return x(d.avg2014)});
-
-// // test line
-// var lineFncn = d3.line()
-//   .x(function(d) { return x(d.avg2010); })
-//   .y(function(d) { return y(d.livelihood_zone); });
-//
-//   var lineChange2 = svg.append("path")
-//     .data([data])
-//     .attr("class", "natl2")
-//     .attr("d", lineFncn);
 
 
 // create dots.
-// extra dots to hide the connector line.
-      var dotGroupMask = svg.append("g")
-          .attr("class", "dot_mask");
 
      // for 2010 data
           var dotGroup2010 = svg.append("g")
                .attr("class", "dot");
 
-
-
-// for 2014 data (copy of 2010 that gets changed)
-          var dotGroup2014 = svg.append("g")
-                    .attr("class", "dot");
-
-// bind the data, transition.
-          dotGroupMask.selectAll("dot")
-               .data(data)
-            .enter().append("circle")
-               .attr("cx", function(d) {return x(d.avg2010)})
-               .attr("cy", function(d) {return y(d.livelihood_zone)+y.bandwidth()/2})
-               .attr("r", radius);
-
           dotGroup2010.selectAll("dot")
                .data(data)
             .enter().append("circle")
-               .attr("cx", function(d) {return x(d.avg2010)})
+               .attr("cx", function(d) {return x(d.natl2010)})
                .attr("cy", function(d) {return y(d.livelihood_zone)+y.bandwidth()/2})
                .attr("r", radius)
-               .attr("fill", function(d) {return z(d.avg2010)})
+               .attr("fill", function(d) {return z(d.natl2010)})
                .attr("fill-opacity", 1)
-             .transition()
-               .duration(5000)
-               .attr("fill-opacity", 0.2);
-
-         dotGroup2014.selectAll("dot")
-              .data(data)
-           .enter().append("circle")
+             .transition(t1)
+               .duration(2000)
               .attr("cx", function(d) {return x(d.avg2010)})
-              .attr("cy", function(d) {return y(d.livelihood_zone)+y.bandwidth()/2})
-              .attr("r", radius)
               .attr("fill", function(d) {return z(d.avg2010)})
-              .attr("fill-opacity", 1)
-            .transition()
-              .duration(4000)
-              .attr("cx", function(d) {return x(d.avg2014)})
-              .attr("fill", function(d) {return z(d.avg2014)});
+
 
 
 // draw the axes
@@ -321,6 +256,8 @@ console.log(lz)
                .attr("transform", "translate(0," + -margin.top + ")");
 
           svg.append("g")
+          .transition(t1)
+          // .duration(4000)
                .call(yAxis)
                .attr("class","y axis")
               //  .attr("transform", "translate(775,0)");
