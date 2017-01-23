@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width initial-scale=1" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <title>test graph</title>
+  <meta name="description" content="{{ site.description }}">
+
+  <!-- base font -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,400">
+  <!-- Accent font -->
+  <link href="https://fonts.googleapis.com/css?family=Antic|Carrois+Gothic+SC|Josefin+Sans:300,400|Muli:300,400|Oxygen:300,400|Raleway:300,400|Roboto:300,400" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Economica|Oswald:300|Pathway+Gothic+One" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Arima+Madurai|Cinzel+Decorative|Poiret+One|Amiri" rel="stylesheet">
+
+  <!-- Bootstrap -->
+  <!-- <link href="{{site.baseurl}}/css/bootstrap.min.css" rel="stylesheet" media="screen"> -->
+
+  <!-- Font Awesome -->
+  <!-- <link rel="stylesheet" href="{{site.baseurl}}/css/font-awesome.min.css"> -->
+
+  <!--custom css styling -->
+  <link rel="stylesheet" href="/css/main.css">
+
+  <style>
+
+
+  body{
+    font-family: "Oxygen", sans-serif;
+    font-weight: 300;
+    color: #333;
+  }
+
+  .top-label {
+    float: left;
+    margin-left: 250px;
+    height: 2.1em;
+    color: #888;
+  }
+
+  .dot {
+    stroke: #333;
+    stroke-width: 0.5;
+    opacity: 1;
+  }
+
+  .dot_mask {
+    stroke: #fff;
+    fill: #fff;
+  }
+
+  .natl {
+    stroke: #333;
+    stroke-width: 1;
+  }
+
+  .change {
+    stroke: #333;
+    stroke-width: 0.5;
+  }
+
+  .val-labels text{
+    text-anchor: end;
+    fill: #555;
+  }
+
+  .grid line {
+    stroke: lightgrey;
+    stroke-opacity: 0.7;
+    shape-rendering: crispEdges;
+  }
+
+  .grid path {
+    stroke-width: 0;
+  }
+
+
+  .axis path {
+    display:none;
+  }
+  .axis text {
+    font-size: 13px;
+    fill: #333;
+  }
+
+  .x.axis line {
+    display: none;
+  }
+  .y.axis line {
+    display:none;
+  }
+
+  </style>
+
+
+</head>
+
+<!-- start of body -->
+<body>
+<h1 class = "blueclass">test title</h1>
+
+
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<!-- load Color Brewer -->
+<script src="https://d3js.org/d3-scale-chromatic.v0.3.js"></script>
+
+<!-- <script src="./scripts/scatter.js" ></script> -->
+
+<script>
+// -- DEFINE CONSTANTS --
+
+// radius of dots in pixels.
+     var radius = 10;
+
+// color palette of dots
+      var colorPalette = d3.interpolateMagma;
+
+// -- INITIALIZE VARIABLES --
+// set dimensions of viz. w/ margins
+     var margin = {top: 30, right: 75, bottom: 0, left: 250},
+          width = 1000 - margin.left - margin.right,
+          height = 450 - margin.top - margin.bottom;
+
+     var body = d3.select("body");
+
+// define scales (# pixels for each axis)
+     var x = d3.scaleLinear()
+          .range([0, width]);
+
+     var y = d3.scaleBand() // Port d3.scale.ordinal to .scaleBand; rangeBands to range w/ paddingInner arg.
+          .range([0, height])
+          .paddingInner(0.2);
+
+    var z = d3.scaleSequential(colorPalette);
+
+// define look of axis
+     var xAxis = d3.axisBottom()
+          .scale(x)
+          .ticks(5, "%");
+
+     var yAxis = d3.axisLeft()
+         .scale(y);
+
+// gridlines in x axis function
+         function make_x_gridlines() {
+           return d3.axisBottom(x)
+           .ticks(5)
+         }
+
+// -- TRANSITIONS --
+// enter livelihood zones!
+                   var t1 = d3.transition()
+                   .duration(4000);
+
+// front-matter text
+     body.append("h2")
+          .text("random text");
+
+
+
+     body.append("div")
+          .attr("class", "top-label")
+       .append("p")
+          .text("percent of stunted children under 5");
+
+     body.append("div")
+          .attr("class", "clearfix")
+
+// -- DATA --
+// import data as csv.
+     d3.csv("data/DHS_stunted_unweighted.csv", function(error, data){
+       if(error) throw error;
+
+       lz = data.filter(function(d) {return d.livelihood_zone;});
+
+// set the domain (data range) of data
+// ! Note: should make more extendable by looking for the max in _either_ avg2010 or avg2014.
+          x.domain([0, d3.max(data, function(element) { return element.avg2010; })]);
+
+          y.domain(data.map(function(element) {return element.livelihood_zone}));
+
+          // z.domain([d3.max(data, function(element) { return element.avg; }), 0]);
+          z.domain([1, 0.2]);
+
+// create the SVG object
+          var svg = body.append("svg")
+               .attr("width", width + margin.left + margin.right)
+               .attr("height", height + margin.top + margin.bottom)
+           .append("g")
+               .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+
+// images (lz icons)
+               var imgs = svg.selectAll("image")
+                  .data(lz)
+               .enter().append("image")
+                   .attr("xlink:href", function(d) {return "/img/" +  d.livelihood_zone + ".png"})
+                   .attr("x", d3.max(data, function(element) { return x(element.avg2010 * 1.03); }))
+                   .attr("y", function(d) {return y(d.livelihood_zone)})
+                   .attr("height", y.bandwidth())
+                   .style("opacity", 0)
+                .transition(t1)
+                    .style("opacity", 1);
+
+
+// add the X gridlines
+            svg.append("g")
+               .attr("class", "grid")
+                   .attr("transform", "translate(0," + height + ")")
+                   .call(make_x_gridlines()
+                       .tickSize(-height)
+                       .tickFormat("")
+                   );
+
+// add reference line
+  var natlAvg2010 = svg.append("g")
+    .attr("class", "natl");
+
+  var natlAnnot = svg.append("g")
+      .attr("class", "val-labels");
+
+
+  natlAvg2010.selectAll("natl")
+      .data(data)
+    .enter().append("line")
+      .attr("y1", 0)
+      .attr("y2", height + margin.top + margin.bottom)
+      .attr("x1", function(d) {return x(d.natl2010)})
+      .attr("x2", function(d) {return x(d.natl2010)});
+
+// national annotation
+      natlAnnot.selectAll("text")
+          .data(data)
+        .enter().append("text")
+          .filter(function(d, i) {return i == 0})
+          .attr("x", function(d) {return x(d.natl2010)})
+          .attr("y", y.bandwidth())
+          .attr("dx", -10)
+          .text(function(d) {return "national average: " + d3.format(".0%")(d.natl2010)});
+
+
+
+// create dots.
+
+     // for 2010 data
+          var dotGroup2010 = svg.append("g")
+               .attr("class", "dot");
+
+          dotGroup2010.selectAll("dot")
+               .data(data)
+            .enter().append("circle")
+               .attr("cx", function(d) {return x(d.natl2010)})
+               .attr("cy", function(d) {return y(d.livelihood_zone)+y.bandwidth()/2})
+               .attr("r", radius)
+               .style("fill", function(d) {return z(d.natl2010)})
+               .style("fill-opacity", 1)
+             .transition(t1)
+               .duration(2000)
+              .attr("cx", function(d) {return x(d.avg2010)})
+              .style("fill", function(d) {return z(d.avg2010)})
+
+// labels
+var pctLab = svg.append("g")
+  .attr("class", "val-labels")
+
+  pctLab.selectAll("val-labels")
+    .data(data)
+    .enter().append("text")
+    .filter(function(d, i) {return i == 0 | i == 12;})
+    .attr("x", function(d) {return x(d.avg2010)})
+    .attr("dx", -radius*2)
+    .attr("y", function(d) {return y(d.livelihood_zone)+y.bandwidth()/2})
+    .attr("dy", y.bandwidth()/4)
+    .text(function(d) {return d3.format(".0%")(d.avg2010)})
+    .style("opacity", 0)
+    .transition(t1)
+      .delay(500)
+      .duration(3500)
+      .style("opacity", 1)
+
+// draw the axes
+          svg.append("g")
+               .call(xAxis)
+               .attr("class", "x axis")
+               .attr("transform", "translate(0," + -margin.top + ")");
+
+          svg.append("g")
+          .transition(t1)
+          // .duration(4000)
+               .call(yAxis)
+               .attr("class","y axis")
+              //  .attr("transform", "translate(775,0)");
+              //  .attr("transform", "translate(" + width + margin.left - margin.right + "," + margin.top + ")");
+
+     });
+</script>
+
+
+</body>
+</html>
