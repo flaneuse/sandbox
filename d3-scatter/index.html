@@ -107,7 +107,7 @@
 
 // -- INITIALIZE VARIABLES --
 // set dimensions of viz. w/ margins
-     var margin = {top: 30, right: 20, bottom: 0, left: 250},
+     var margin = {top: 30, right: 75, bottom: 0, left: 250},
           width = 1000 - margin.left - margin.right,
           height = 450 - margin.top - margin.bottom;
 
@@ -139,7 +139,7 @@
 
 // front-matter text
      body.append("h2")
-          .text("Age distribution of the world, " + year);
+          .text("random text");
 
      body.append("div")
           .attr("class", "top-label age-label")
@@ -180,6 +180,7 @@ console.log(lz)
 //           console.log(y2);
 
 // set the domain (data range) of data
+// ! Note: should make more extendable by looking for the max in _either_ avg2010 or avg2014.
           x.domain([0, d3.max(data, function(element) { return element.avg2010; })]);
 
           y.domain(data.map(function(element) {return element.livelihood_zone}));
@@ -200,7 +201,7 @@ console.log(lz)
                   .data(lz)
                .enter().append("image")
                    .attr("xlink:href", function(d) {return "/img/" +  d.livelihood_zone + ".png"})
-                   .attr("x", x(0.55))
+                   .attr("x", d3.max(data, function(element) { return x(element.avg2010 * 1.03); }))
                    .attr("y", function(d) {return y(d.livelihood_zone)})
                   //  .attr("width", "200px")
                    .attr("height", y.bandwidth());
