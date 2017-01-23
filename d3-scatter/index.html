@@ -62,9 +62,8 @@
   }
 
   .val-labels text{
-    text-align: right;
-    padding-right: 20;
-    color: #f55;
+    text-anchor: end;
+    fill: #555;
   }
 
   .grid line {
@@ -219,8 +218,8 @@
   var natlAvg2010 = svg.append("g")
     .attr("class", "natl");
 
-  var natlAvg2014 = svg.append("g")
-      .attr("class", "natl");
+  var natlAnnot = svg.append("g")
+      .attr("class", "val-labels");
 
 
   natlAvg2010.selectAll("natl")
@@ -231,6 +230,15 @@
       .attr("x1", function(d) {return x(d.natl2010)})
       .attr("x2", function(d) {return x(d.natl2010)});
 
+// national annotation
+      natlAnnot.selectAll("text")
+          .data(data)
+        .enter().append("text")
+          .filter(function(d, i) {return i == 0})
+          .attr("x", function(d) {return x(d.natl2010)})
+          .attr("y", y.bandwidth())
+          .attr("dx", -10)
+          .text(function(d) {return "national average: " + d3.format(".0%")(d.natl2010)});
 
 
 
@@ -262,7 +270,9 @@ var pctLab = svg.append("g")
     .enter().append("text")
     .filter(function(d, i) {return i == 0 | i == 12;})
     .attr("x", function(d) {return x(d.avg2010)})
-    .attr("y", function(d) {return y(d.livelihood_zone)+y.bandwidth()})
+    .attr("dx", -radius*2)
+    .attr("y", function(d) {return y(d.livelihood_zone)+y.bandwidth()/2})
+    .attr("dy", y.bandwidth()/4)
     .text(function(d) {return d3.format(".0%")(d.avg2010)})
     .attr("opacity", 0)
     .transition(t1)
