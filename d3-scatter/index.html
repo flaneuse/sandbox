@@ -33,6 +33,13 @@
     color: #333;
   }
 
+  .top-label {
+    float: left;
+    margin-left: 250px;
+    height: 2.1em;
+    color: #888;
+  }
+
   .dot {
     stroke: #333;
     stroke-width: 0.5;
@@ -141,17 +148,12 @@
      body.append("h2")
           .text("random text");
 
-     body.append("div")
-          .attr("class", "top-label age-label")
-       .append("p")
-          .text("age group");
-
 
 
      body.append("div")
           .attr("class", "top-label")
        .append("p")
-          .text("portion of the population");
+          .text("percent of stunted children under 5");
 
      body.append("div")
           .attr("class", "clearfix")
