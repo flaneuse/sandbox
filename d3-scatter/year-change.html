@@ -307,6 +307,7 @@
     .style("fill", function(d) {return z(d.avg2010)})
     .style("fill-opacity", 1)
   .transition()
+    // .delay(function(d,i) {return i*100;})
     .duration(4000)
     .attr("cx", function(d) {return x(d.avg2014)})
     .style("fill", function(d) {return z(d.avg2014)});
