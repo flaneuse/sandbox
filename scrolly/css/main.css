@@ -53,7 +53,7 @@ body{
 
 .x.axis line {
   stroke: lightgrey;
-  stroke-width: 0.5;
+  stroke-width: 1;
   shape-rendering: crispEdges;
 }
 
