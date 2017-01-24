@@ -162,23 +162,21 @@
 
 // -- DATA --
 // import data as csv.
-  d3.csv("data/DHS_stunted_unweighted_tidy.csv", function(error, data){
+  d3.csv("data/DHS_stunted_unweighted.csv", function(error, data){
     if(error) throw error;
 
     lz = data.filter(function(d) {return d.livelihood_zone;});
-    // console.log(lz)
-
-       var nested = d3.nest()
-          .key(function(d) {return d.year;})
-          .sortKeys(d3.ascending)
-          .entries(data);
-
-
-          // console.log(nested.values.avg)
+    console.log(lz)
+      //  var nested = d3.nest()
+      //     .key(function(d) {return d.year;})
+      //     .sortKeys(d3.ascending)
+      //     .entries(data);
+       //
+      //     console.log(nested)
 
 // set the domain (data range) of data
 // ! Note: should make more extendable by looking for the max in _either_ avg2010 or avg2014.
-  x.domain([0, d3.max(data, function(element) { return element.avg; })]);
+  x.domain([0, d3.max(data, function(element) { return element.avg2010; })]);
   y.domain(data.map(function(element) {return element.livelihood_zone}));
 
   // z.domain([d3.max(data, function(element) { return element.avg; }), 0]);
@@ -197,7 +195,7 @@
     .data(lz)
   .enter().append("image")
     .attr("xlink:href", function(d) {return "/img/" +  d.livelihood_zone + ".png"})
-    .attr("x", d3.max(data, function(element) { return x(element.avg* 1.03); }))
+    .attr("x", d3.max(data, function(element) { return x(element.avg2010 * 1.03); }))
     .attr("y", function(d) {return y(d.livelihood_zone)})
     .attr("height", y.bandwidth());
 
@@ -217,47 +215,47 @@
   var natlAvg2014 = svg.append("g")
     .attr("class", "natl");
 
-//
-//   natlAvg2010.selectAll("natl")
-//     .data(nested)
-//   .enter().append("line")
-//     .attr("y1", 0)
-//     .attr("y2", height + margin.top + margin.bottom)
-//     .attr("x1", function(d) {return x(d.values.natl)})
-//     .attr("x2", function(d) {return x(d.values.natl)})
-//     .style("opacity", 1)
-//   .transition(t1_change)
-//     .style("opacity", 0)
-//     .remove()
-//
-//   natlAvg2014.selectAll("natl")
-//     .data(nested)
-//   .enter().append("line")
-//     .attr("y1", 0)
-//     .attr("y2", height + margin.top + margin.bottom)
-//     .attr("x1", function(d) {return x(d.values.natl)})
-//     .attr("x2", function(d) {return x(d.values.natl)})
-//     .style("opacity", 0)
-//   .transition(t1_change)
-//     .style("opacity", 1)
-//
-//
-// // create lines that connect the dots.
-//   var lineChange = svg.append("g")
-//     .attr("class", "change")
-//
-//   lineChange.selectAll("change")
-//     .data(nested)
-//   .enter().append("line")
-//     .attr("y1", function(d) {return y(d.values.livelihood_zone) + y.bandwidth()/2})
-//     .attr("y2", function(d) {return y(d.values.livelihood_zone) + y.bandwidth()/2})
-//     .attr("x1", function(d) {return x(d.values.avg)})
-//     .attr("x2", function(d) {return x(d.values.avg)});
+
+  natlAvg2010.selectAll("natl")
+    .data(data)
+  .enter().append("line")
+    .attr("y1", 0)
+    .attr("y2", height + margin.top + margin.bottom)
+    .attr("x1", function(d) {return x(d.natl2010)})
+    .attr("x2", function(d) {return x(d.natl2010)})
+    .style("opacity", 1)
+  .transition(t1_change)
+    .style("opacity", 0)
+    .remove()
+
+  natlAvg2014.selectAll("natl")
+    .data(data)
+  .enter().append("line")
+    .attr("y1", 0)
+    .attr("y2", height + margin.top + margin.bottom)
+    .attr("x1", function(d) {return x(d.natl2014)})
+    .attr("x2", function(d) {return x(d.natl2014)})
+    .style("opacity", 0)
+  .transition(t1_change)
+    .style("opacity", 1)
+
+
+// create lines that connect the dots.
+  var lineChange = svg.append("g")
+    .attr("class", "change")
+
+  lineChange.selectAll("change")
+    .data(data)
+  .enter().append("line")
+    .attr("y1", function(d) {return y(d.livelihood_zone) + y.bandwidth()/2})
+    .attr("y2", function(d) {return y(d.livelihood_zone) + y.bandwidth()/2})
+    .attr("x1", function(d) {return x(d.avg2010)})
+    .attr("x2", function(d) {return x(d.avg2014)});
 
 // // test line
 // var lineFncn = d3.line()
 //   .x(function(d) { return x(d.avg2010); })
-//   .y(function(d) { return y(d.values.livelihood_zone); });
+//   .y(function(d) { return y(d.livelihood_zone); });
 //
 //   var lineChange2 = svg.append("path")
 //     .data([data])
@@ -270,79 +268,49 @@
   var dotGroupMask = svg.append("g")
     .attr("class", "dot_mask");
 
-    nested = [
-  {"key":"America","values":[
-    {"country":"United States","continent":"America","population":"313232","GDPcap":"46587.61843","GERD":"2.78518","growth":"3.02171711"},
-     {"country":"Mexico","continent":"America","population":"109219.9","GDPcap":"15200.22119","GERD":"0.41322","growth":"5.56185685"},
-      {"country":"Canada","continent":"America","population":"33909.7","GDPcap":"39069.91407","GERD":"1.80213","growth":"3.21494841"},      {"country":"Chile","continent":"America","population":"17248.45","GDPcap":"15106.73205","GERD":"0.39451","growth":"5.19813626"}
-  ]
-},
-  {"key":"Asia","values":    {"country":"United States","continent":"America","population":"313232","GDPcap":"46587.61843","GERD":"2.78518","growth":"3.02171711"},
-       {"country":"Mexico","continent":"America","population":"109219.9","GDPcap":"15200.22119","GERD":"0.41322","growth":"5.56185685"},
-        {"country":"Canada","continent":"America","population":"33909.7","GDPcap":"39069.91407","GERD":"1.80213","growth":"3.21494841"},      {"country":"Chile","continent":"America","population":"17248.45","GDPcap":"15106.73205","GERD":"0.39451","growth":"5.19813626"}
-    ]}
-  ]
-
-console.log(nested)
-
 // for 2010 data
-var g = svg.selectAll("g").data(nested)
-.enter().append("g")
-  .attr("class", "new")
+  var dotGroup2010 = svg.append("g")
+    .attr("class", "dot");
 
 
-  g.selectAll("circle")
-  // we are getting the values of the countries like this:
-  .data(function(d) {return d.values})
-  .enter().append("circle")
-  .attr("r",3)
-  .attr("cx",function(d,i) {return x(+d.GERD);})
-  .attr("cy",function(d,i) {return y(+d.growth);})
 
 // for 2014 data (copy of 2010 that gets changed)
   var dotGroup2014 = svg.append("g")
     .attr("class", "dot");
 
-// // bind the data, transition.
-//   dotGroupMask.selectAll("dot")
-//     .data(nested)
-//   .enter().append("circle")
-//     .attr("cx", function(d) {return x(d.values.avg)})
-//     .attr("cy", function(d) {return y(d.values.livelihood_zone)+y.bandwidth()/2})
-//     .attr("r", radius);
+// bind the data, transition.
+  dotGroupMask.selectAll("dot")
+    .data(data)
+  .enter().append("circle")
+    .attr("cx", function(d) {return x(d.avg2010)})
+    .attr("cy", function(d) {return y(d.livelihood_zone)+y.bandwidth()/2})
+    .attr("r", radius);
 
+  dotGroup2010.selectAll("dot")
+     .data(data)
+  .enter().append("circle")
+    .attr("cx", function(d) {return x(d.avg2010)})
+    .attr("cy", function(d) {return y(d.livelihood_zone)+y.bandwidth()/2})
+    .attr("r", radius)
+    .style("fill", function(d) {return z(d.avg2010)})
+    .style("fill-opacity", 1)
+  .transition()
+    .duration(5000)
+    .style("fill-opacity", 0.2);
 
-console.log(nested)
-
-// console.log(nested[1].values)
-
-  // dotGroup2010.selectAll("dot")
-  //    .data(nested)
-  // .enter().append("text")
-  // .attr("x", 50)
-  // .attr("y", 50)
-  // .text(function(d, i) {return d[i].values.year});
-  //   .attr("cx", function(d,i) {return x(d[i].values.avg)})
-  //   .attr("cy", function(d,i) {return y(d[i].values.livelihood_zone)+y.bandwidth()/2})
-  //   .attr("r", radius)
-  //   .style("fill", function(d,i) {return z(d[i].values.avg)})
-  //   .style("fill-opacity", 1)
-  // .transition()
-  //   .duration(5000)
-  //   .style("fill-opacity", 0.2);
-
-  // dotGroup2014.selectAll("dot")
-  //   .data(nested)
-  // .enter().append("circle")
-  //   .attr("cx", function(d) {return x(d.values.avg)})
-  //   .attr("cy", function(d) {return y(d.values.livelihood_zone)+y.bandwidth()/2})
-  //   .attr("r", radius)
-  //   .style("fill", function(d) {return z(d.values.avg)})
-  //   .style("fill-opacity", 1)
-  // .transition()
-  //   .duration(4000)
-  //   .attr("cx", function(d) {return x(d.values.avg)})
-  //   .style("fill", function(d) {return z(d.values.avg)});
+  dotGroup2014.selectAll("dot")
+    .data(data)
+  .enter().append("circle")
+    .attr("cx", function(d) {return x(d.avg2010)})
+    .attr("cy", function(d) {return y(d.livelihood_zone)+y.bandwidth()/2})
+    .attr("r", radius)
+    .style("fill", function(d) {return z(d.avg2010)})
+    .style("fill-opacity", 1)
+  .transition()
+    // .delay(function(d,i) {return i*100;})
+    .duration(4000)
+    .attr("cx", function(d) {return x(d.avg2014)})
+    .style("fill", function(d) {return z(d.avg2014)});
 
 
 // draw the axes
