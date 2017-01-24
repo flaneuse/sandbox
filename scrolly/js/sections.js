@@ -55,7 +55,8 @@ var scrollVis = function() {
   var xAxis = d3.svg.axis()
        .scale(x)
        .orient("top")
-       .ticks(5, "%");
+       .ticks(5, "%")
+       .innerTickSize(height);
 
   var yAxis = d3.svg.axis()
        .scale(y)
@@ -173,7 +174,10 @@ var scrollVis = function() {
       .attr("transform", "translate(" + width + ", 0)")
     g.select(".y.axis").style("opacity", 1);
 
-
+// g.append("circle")
+//   .attr("cx", function(d) return{x(d.natl2010)})
+//   .attr("cy", width/2)
+//   .attr("r", 40);
 
     // count openvis title
     g.append("text")
