@@ -28,42 +28,72 @@ var scrollVis = function() {
   // for displaying visualizations
   var g = null;
 
-  // We will set the domain when the
-  // data is processed.
-  var xBarScale = d3.scale.linear()
-    .range([0, width]);
 
-  // The bar chart display is horizontal
-  // so we can use an ordinal scale
-  // to get width and y locations.
-  var yBarScale = d3.scale.ordinal()
-    .domain([0,1,2])
-    .rangeBands([0, height - 50], 0.1, 0.1);
+  // -- DEFINE CONSTANTS --
+
+  // radius of dots in pixels.
+       var radius = 10;
 
 
-  // The histogram display shows the
-  // first 30 minutes of data
-  // so the range goes from 0 to 30
-  var xHistScale = d3.scale.linear()
-    .domain([0, 30])
-    .range([0, width - 20]);
-
-  var yHistScale = d3.scale.linear()
-    .range([height, 0]);
 
 
-  // You could probably get fancy and
-  // use just one axis, modifying the
-  // scale, but I will use two separate
-  // ones to keep things easy.
-  var xAxisBar = d3.svg.axis()
-    .scale(xBarScale)
-    .orient("bottom");
+  // -- SCALES --
+    // define scales (# pixels for each axis)
+  /* D3.js VERSION 3
+  */
+  var x = d3.scale.linear()
+       .range([0, width]);
 
-  var xAxisHist = d3.svg.axis()
-    .scale(xHistScale)
-    .orient("bottom")
-    .tickFormat(function(d) { return d + " min"; });
+  var y = d3.scale.ordinal()
+       .rangeBands([0, height], 0.2, 0);
+
+  var z = d3.scale.linear()
+  .range(["white", "steelblue"])
+    .interpolate(d3.interpolateLab)
+       .domain([1, 0.2]);
+
+  var xAxis = d3.svg.axis()
+       .scale(x)
+       .orient("top")
+       .ticks(5, "%");
+
+  var yAxis = d3.svg.axis()
+       .scale(y)
+       .orient("left");
+
+// gridlines
+  function make_x_gridlines() {
+         return d3.axis.orient("bottom").x
+         .ticks(5)
+       }
+
+/* D3.js v. 4
+  // color palette of dots
+        var colorPalette = d3.interpolateSpectral;
+
+       var x = d3.scaleLinear() // D3.js v.4
+            .range([0, width]);
+
+       var y = d3.scaleBand() // Port d3.scale.ordinal to .scaleBand; rangeBands to range w/ paddingInner arg.
+            .range([0, height])
+            .paddingInner(0.2);
+
+      var z = d3.scaleSequential(colorPalette);
+
+  // define look of axis
+       var xAxis = d3.axisBottom()
+            .scale(x)
+            .ticks(5, "%");
+
+       var yAxis = d3.axisLeft()
+           .scale(y);
+
+  // gridlines in x axis function
+           function make_x_gridlines() {
+             return d3.axisBottom(x)
+             .ticks(5)
+           }
+*/
 
   // When scrolling to a new section
   // the activation function for that
@@ -85,7 +115,7 @@ var scrollVis = function() {
   var chart = function(selection) {
     selection.each(function(rawData) {
       // create svg and give it a width and height
-      svg = d3.select(this).selectAll("svg").data([wordData]);
+      svg = d3.select(this).selectAll("svg").data([rawData]);
       svg.enter().append("svg").append("g");
 
       svg.attr("width", width + margin.left + margin.right);
@@ -97,25 +127,19 @@ var scrollVis = function() {
       g = svg.select("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-      // perform some preprocessing on raw data
-      var wordData = getWords(rawData);
-      // filter to just include filler words
-      var fillerWords = getFillerWords(wordData);
 
-      // get the counts of filler words for the
-      // bar chart display
-      var fillerCounts = groupByWord(fillerWords);
-      // set the bar scale's domain
-      var countMax = d3.max(fillerCounts, function(d) { return d.values;});
-      xBarScale.domain([0,countMax]);
+// update all domains based on data.
+// set the domain (data range) of data
+// ! Note: should make more extendable by looking for the max in _either_ avg2010 or avg2014.
 
-      // get aggregated histogram data
-      var histData = getHistogram(fillerWords);
-      // set histogram's domain
-      var histMax = d3.max(histData, function(d) { return d.y; });
-      yHistScale.domain([0, histMax]);
+          x.domain([0, d3.max(rawData, function(element) { return element.avg2010; })]);
 
-      setupVis(wordData, fillerCounts, histData);
+          y.domain(rawData.map(function(element) {return element.livelihood_zone}));
+
+          // z.domain([d3.max(rawData, function(element) { return element.avg; }), 0]);
+
+
+      setupVis();
 
       setupSections();
 
@@ -132,26 +156,37 @@ var scrollVis = function() {
    *  element for each filler word type.
    * @param histData - binned histogram data
    */
-  setupVis = function(wordData, fillerCounts, histData) {
-    // axis
-    g.append("g")
-      .attr("class", "x axis")
+  setupVis = function() {
+    // x-axis
+    svg.append("g")
+         .call(xAxis)
+         .attr("class", "x axis")
+        //  .attr("transform", "translate(0," + -margin.top + ")");
       .attr("transform", "translate(0," + height + ")")
-      .call(xAxisBar);
-    g.select(".x.axis").style("opacity", 0);
+    g.select(".x.axis").style("opacity", 1); // ! Change to 0
+
+    // y-axis
+    svg.append("g")
+         .call(yAxis)
+         .attr("class", "y axis")
+        //  .attr("transform", "translate(0," + -margin.top + ")");
+      .attr("transform", "translate(" + width + ", 0)")
+    g.select(".y.axis").style("opacity", 1);
+
+
 
     // count openvis title
     g.append("text")
       .attr("class", "title openvis-title")
       .attr("x", width / 2)
       .attr("y", height / 3)
-      .text("2013");
+      .text("title");
 
     g.append("text")
       .attr("class", "sub-title openvis-title")
       .attr("x", width / 2)
       .attr("y", (height / 3) + (height / 5) )
-      .text("OpenVis Conf");
+      .text("tbd");
 
     g.selectAll(".openvis-title")
       .attr("opacity", 0);
@@ -202,7 +237,7 @@ var scrollVis = function() {
     for(var i = 0; i < 9; i++) {
       updateFunctions[i] = function() {};
     }
-    updateFunctions[7] = updateCough;
+    // If using any updateFunctions, call it here.
   };
 
   /**
@@ -437,15 +472,9 @@ var scrollVis = function() {
 
 
   /**
-   * hideAxis - helper function
-   * to hide the axis
-   *
+   * HELPER FUNCTIONS
    */
-  function hideAxis() {
-    g.select(".x.axis")
-      .transition().duration(500)
-      .style("opacity",0);
-  }
+
 
   /**
    * UPDATE FUNCTIONS
@@ -510,6 +539,7 @@ var scrollVis = function() {
  * @param data - loaded tsv data
  */
 function display(data) {
+
   // create a new plot and
   // display it
   var plot = scrollVis();
@@ -540,4 +570,4 @@ function display(data) {
 }
 
 // load data and display
-// d3.tsv("data/words.tsv", display);
+d3.csv("data/dhs.csv", display);
