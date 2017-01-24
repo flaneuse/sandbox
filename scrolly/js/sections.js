@@ -62,11 +62,11 @@ var scrollVis = function() {
        .scale(y)
        .orient("left");
 
-// gridlines
-  function make_x_gridlines() {
-         return d3.axis.orient("bottom").x
-         .ticks(5)
-       }
+// // gridlines
+//   function make_x_gridlines() {
+//          return d3.axis.orient("bottom").x
+//          .ticks(5)
+//        }
 
 /* D3.js v. 4
   // color palette of dots
@@ -140,7 +140,7 @@ var scrollVis = function() {
           // z.domain([d3.max(rawData, function(element) { return element.avg; }), 0]);
 
 
-      setupVis();
+      setupVis(rawData);
 
       setupSections();
 
@@ -157,7 +157,7 @@ var scrollVis = function() {
    *  element for each filler word type.
    * @param histData - binned histogram data
    */
-  setupVis = function() {
+  setupVis = function(data) {
     // x-axis
     svg.append("g")
          .call(xAxis)
@@ -174,10 +174,25 @@ var scrollVis = function() {
       .attr("transform", "translate(" + width + ", 0)")
     g.select(".y.axis").style("opacity", 1);
 
-// g.append("circle")
-//   .attr("cx", function(d) return{x(d.natl2010)})
-//   .attr("cy", width/2)
-//   .attr("r", 40);
+console.log(typeof(data.length))
+
+    var dotGroup2010 = g.selectAll("dot")
+         .data(data)
+      .enter().append("circle")
+         .attr("cx", function(d) {return x(d.natl2010)})
+         .attr("cy", height/2)
+         .attr("r", Math.sqrt(Math.pow(radius, 2)*13)) // Calc equal area.
+         .style("fill", function(d) {return z(d.natl2010)})
+         .style("fill-opacity", 1)
+       .transition()
+         .duration(2000)
+         .attr("r", radius)
+         .attr("cy", function(d) {return y(d.livelihood_zone)})
+      .transition()
+        .delay(1000)
+        .duration(2000)
+        .attr("cx", function(d) {return x(d.avg2010)})
+        .style("fill", function(d) {return z(d.avg2010)})
 
     // count openvis title
     g.append("text")
