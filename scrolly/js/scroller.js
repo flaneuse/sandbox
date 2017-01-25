@@ -94,14 +94,18 @@ function scroller() {
     sectionIndex = Math.min(sections.size() - 1, sectionIndex);
 
     if (currentIndex !== sectionIndex) {
+      // console.log(selectionIndex)
+      // console.log(dispatch)
       dispatch.active(sectionIndex);
       currentIndex = sectionIndex;
+            // console.log(dispatch)
     }
 
     var prevIndex = Math.max(sectionIndex - 1, 0);
     var prevTop = sectionPositions[prevIndex];
     var progress = (pos - prevTop) / (sectionPositions[sectionIndex] - prevTop);
     dispatch.progress(currentIndex, progress);
+    // console.log(dispatch)
   }
 
   /**
