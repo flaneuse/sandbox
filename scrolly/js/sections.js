@@ -462,6 +462,7 @@ var scrollVis = function() {
         .duration(600)
         .attr("r", radius)
         .attr("cy", function(d) {return y(d.livelihood_zone)})
+        .attr("transform","translate(0,0)")
   .transition()
     .delay(1000)
     .duration(1500)
@@ -502,6 +503,18 @@ var scrollVis = function() {
       .transition()
       .duration(600)
       .style("opacity", 1);
+
+    g.selectAll(".dot.y1")
+        .transition()
+        .duration(600)
+        .attr("cx", function(d) {return d.imgX;})
+        .attr("cy", function(d) {return d.imgY;})
+        .attr("transform","translate(-105,-40)")
+        .transition()
+        // .delay(600)
+        .delay(function(d, i) {return i*100 + 600;})
+        .duration(2000)
+        .style("opacity", 0.3);
 
 // subsequent
     g.selectAll(".count-title")
