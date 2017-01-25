@@ -184,9 +184,8 @@ var scrollVis = function() {
          .attr("cx", function(d) {return x(d.natl2010)})
          .attr("cy", height/2)
          .attr("r", Math.sqrt(Math.pow(radius, 2)*13)) // Calc equal area.
-         .style("fill", function(d) {return z(d.natl2010)});
-
-    g.select(".dot.y1").style("opacity", 0);
+         .style("fill", function(d) {return z(d.natl2010)})
+         .style("opacity", 0);
 
 
 // Dot mask to underlie 2010 data when opacity is changed.
