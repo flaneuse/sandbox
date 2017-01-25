@@ -29,7 +29,7 @@ var scrollVis = function() {
 
   // d3 selection that will be used
   // for displaying visualizations
-  var g = null;
+  var myG = null;
 
 
   // -- DEFINE CONSTANTS --
@@ -128,7 +128,7 @@ var scrollVis = function() {
 
       // this group element will be used to contain all
       // other elements.
-      g = svg.select("g")
+      myG = svg.select("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 
@@ -172,20 +172,20 @@ var scrollVis = function() {
     // Common chart elements
 
     // x-axis
-    g.append("g")
+    myG.append("g")
          .call(xAxis)
          .attr("class", "x axis")
          .attr("transform", "translate(0," + height + ")")
          .style("opacity", 0); // ! Change to 0
 
     // y-axis
-    g.append("g")
+    myG.append("g")
          .call(yAxis)
          .attr("class", "y axis")
          .style("opacity", 0);
 
     // x-axis title
-    g.append("text")
+    myG.append("text")
           .attr("class", "x label")
           .attr("x", 0)
           .attr("y", -20)
@@ -193,7 +193,7 @@ var scrollVis = function() {
           .style("opacity", 0);
 
     // images (lz icons)
-     var imgs = g.selectAll("image")
+     var imgs = myG.selectAll("image")
         .data(lz)
      .enter().append("image")
         .attr("class", "lz-icons")
@@ -206,19 +206,19 @@ var scrollVis = function() {
 
 
 // FRAME 0: initial settings
-         g.append("text")
+         myG.append("text")
            .attr("class", "title rwanda-title")
            .attr("x", width / 2)
            .attr("y", height / 3)
            .text("title");
 
-         g.append("text")
+         myG.append("text")
            .attr("class", "sub-title rwanda-title")
            .attr("x", width / 2)
            .attr("y", (height / 3) + (height / 5) )
            .text("tbd");
 
-         g.selectAll(".rwanda-title")
+         myG.selectAll(".rwanda-title")
            .style("opacity", 0);
 
 // FRAME 2: Natl. avg line
@@ -244,7 +244,7 @@ var scrollVis = function() {
            .style("opacity", 0);
 
    // national annotation
-   svg.selectAll("g").selectAll(".natl-annot")
+   myG.selectAll(".natl-annot")
          .data(natlData)
        .enter().append("text")
          .attr("class", "natl natl-annot")
@@ -256,7 +256,7 @@ var scrollVis = function() {
          .style("opacity", 0);
 
 // national annotation 2010
-         svg.selectAll("g").selectAll(".natl-annot2010")
+         myG.selectAll(".natl-annot2010")
                .data(natlData)
              .enter().append("text")
                .attr("class", "natl-annot2010")
@@ -279,7 +279,7 @@ var scrollVis = function() {
 
 
 // FRAME 1: Initial national average, 2010.
-    var dotGroup2010 = g.selectAll("dot")
+    var dotGroup2010 = myG.selectAll("dot")
          .data(data)
       .enter().append("circle")
           .attr("class", "dot y1")
@@ -290,7 +290,7 @@ var scrollVis = function() {
          .style("opacity", 0);
 
   // value label for nat'l avg.
-    var natlLabel = svg.selectAll("g").selectAll(".natl-value")
+    var natlLabel = myG.selectAll(".natl-value")
       .data(natlData)
     .enter().append("text")
       .attr("class", "natl-value")
@@ -302,7 +302,7 @@ var scrollVis = function() {
 
 // FRAME 2: Annotations
 // labels
-      var pctLab = svg.selectAll("g").selectAll(".val-labels")
+      var pctLab = myG.selectAll(".val-labels")
           .data(data)
           .enter().append("text")
             .attr("class", "val-labels")
@@ -389,14 +389,14 @@ var scrollVis = function() {
     // previous (null)
 
     // subsequent: hide natl avg. graph
-    g.selectAll(".dot.y1")
+    myG.selectAll(".dot.y1")
       .transition()
       .duration(0)
       .style("opacity", 0);
 
       hideX();
 
-    g.selectAll(".natl-value")
+    myG.selectAll(".natl-value")
               .transition()
               .duration(0)
               .style("opacity", 0);
@@ -404,7 +404,7 @@ var scrollVis = function() {
 
 
     // show current
-    g.selectAll(".rwanda-title")
+    myG.selectAll(".rwanda-title")
       .transition()
       .duration(600)
       .style("opacity", 1.0);
@@ -421,7 +421,7 @@ var scrollVis = function() {
    */
   function showNatl2010() {
     // previous
-    g.selectAll(".rwanda-title")
+    myG.selectAll(".rwanda-title")
       .transition()
       .duration(0)
       .style("opacity", 0);
@@ -430,7 +430,7 @@ var scrollVis = function() {
     // current: make nat'l avg. appear.
     showX();
 
-    g.selectAll(".dot.y1")
+    myG.selectAll(".dot.y1")
       .transition()
       .duration(600)
       .style("opacity", 1.0)
@@ -440,7 +440,7 @@ var scrollVis = function() {
       .attr("r", Math.sqrt(Math.pow(radius, 2)*13)) // Calc equal area.
       .style("fill", function(d) {return z(d.natl2010)});
 
-    g.selectAll(".natl-value")
+    myG.selectAll(".natl-value")
         .transition()
         .duration(600)
         .style("opacity", 1);
@@ -467,7 +467,7 @@ var scrollVis = function() {
    */
   function showLZ2010() {
     // previous
-    g.selectAll(".natl-value")
+    myG.selectAll(".natl-value")
       .transition()
       .duration(0)
       .style("opacity", 0);
@@ -480,7 +480,7 @@ var scrollVis = function() {
 
     showAvg();
 
-    g.selectAll(".dot.y1")
+    myG.selectAll(".dot.y1")
       .transition()
         .duration(600)
         .attr("r", radius)
@@ -492,7 +492,7 @@ var scrollVis = function() {
         .attr("cx", function(d) {return x(d.avg2010)})
         .style("fill", function(d) {return z(d.avg2010)});
 
-    g.selectAll(".val-labels")
+    myG.selectAll(".val-labels")
         .transition()
         .delay(2500)
         .duration(600)
@@ -527,7 +527,7 @@ var scrollVis = function() {
       .duration(600)
       .style("opacity", 1);
 
-    g.selectAll(".dot.y1")
+    myG.selectAll(".dot.y1")
         .transition()
         .duration(600)
         .attr("cx", function(d) {return d.imgX;})
@@ -541,7 +541,7 @@ var scrollVis = function() {
         .style("opacity", 0.3);
 
 // subsequent
-    g.selectAll(".count-title")
+    myG.selectAll(".count-title")
       .transition()
       .duration(600)
       .style("opacity", 1.0);
@@ -566,7 +566,7 @@ var scrollVis = function() {
 
 // current: dot plot reappear, fade map
 // change title
-g.selectAll(".x.label")
+myG.selectAll(".x.label")
   .text("percent of stunted children under 5")
 
 
@@ -577,13 +577,13 @@ showY();
 showLZ();
 
 // Show the average lines
-g.selectAll(".natl2010")
+myG.selectAll(".natl2010")
   .transition()
   .duration(600)
   .style("opacity", 1);
 
   // change avg. label
-  g.selectAll(".natl-annot2010")
+  myG.selectAll(".natl-annot2010")
   .transition()
   .duration(600)
     .style("opacity", 1);
@@ -591,7 +591,7 @@ g.selectAll(".natl2010")
 showAvg();
 
 // reappear dots
-g.selectAll(".dot.y1")
+myG.selectAll(".dot.y1")
     .transition()
     .duration(600)
     .style("opacity", 1)
@@ -605,7 +605,7 @@ g.selectAll(".dot.y1")
 // add 2010/2014 annotation
 
 // change avg. line
-svg.selectAll("g").selectAll(".natl")
+myG.selectAll(".natl")
   .style("opacity", 1)
   .attr("x1", function(d) {return x(d.natl2010);})
   .attr("x2", function(d) {return x(d.natl2010);})
@@ -617,13 +617,13 @@ svg.selectAll("g").selectAll(".natl")
   .selectAll("natl-annot")
 
   // change avg. label
-  g.selectAll(".natl-annot")
+  myG.selectAll(".natl-annot")
     .attr("x", function(d) {return x(d.natl2014);})
     .text(function(d) {return "2014: " + d3.format(".0%")(d.natl2014)})
     .style("font-size", "32px");
 
 // subsequent
-    g.selectAll(".count-title")
+    myG.selectAll(".count-title")
       .transition()
       .duration(600)
       .style("opacity", 1.0);
@@ -637,24 +637,24 @@ svg.selectAll("g").selectAll(".natl")
    */
 // -- X-AXIS --
 function showX() {
-  g.selectAll(".axis.x")
+  myG.selectAll(".x.axis")
       .transition()
       .duration(600)
       .style("opacity", 1);
 
-  g.selectAll(".x.label")
+  myG.selectAll(".x.label")
           .transition()
           .duration(600)
           .style("opacity", 1);
 }
 
 function hideX() {
-  g.selectAll(".axis.x")
+  myG.selectAll(".x.axis")
       .transition()
       .duration(0)
       .style("opacity", 0);
 
-  g.selectAll(".x.label")
+  myG.selectAll(".x.label")
           .transition()
           .duration(0)
           .style("opacity", 0);
@@ -662,14 +662,14 @@ function hideX() {
 
 // -- Y-AXIS --
 function showY(){
-  g.selectAll(".axis.y")
+  myG.selectAll(".y.axis")
     .transition()
     .duration(600)
     .style("opacity", 1.0);
 }
 
 function hideY() {
-  g.selectAll(".axis.y")
+  myG.selectAll(".y.axis")
     .transition()
     .duration(0)
     .style("opacity", 0);
@@ -677,28 +677,28 @@ function hideY() {
 
 // -- LIVELIHOOD ZONE MAPS --
    function showLZ() {
-     g.selectAll(".lz-icons")
+     myG.selectAll(".lz-icons")
          .transition()
          .duration(600)
          .style("opacity", 1);
    }
 
   function hideLZ() {
-        g.selectAll(".lz-icons")
+        myG.selectAll(".lz-icons")
             .transition()
             .duration(600)
             .style("opacity", 0);
       }
   // -- NATL AVG LINE --
   function showAvg() {
-    g.selectAll(".natl")
+    myG.selectAll(".natl")
     .transition()
     .duration(600)
     .style("opacity", 1)
   }
 
   function hideAvg() {
-    g.selectAll(".natl")
+    myG.selectAll(".natl")
     .transition()
     .duration(0)
     .style("opacity", 0)
@@ -706,7 +706,7 @@ function hideY() {
 
   // -- PCT LABELS --
   function hideValues() {
-    g.selectAll(".val-labels")
+    myG.selectAll(".val-labels")
     .transition()
     .duration(0)
     .style("opacity", 0)
