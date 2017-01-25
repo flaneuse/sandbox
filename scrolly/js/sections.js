@@ -142,8 +142,12 @@ var scrollVis = function() {
 
           // z.domain([d3.max(rawData, function(element) { return element.avg; }), 0]);
 
+      // filter out just the livelihood zone names.
+      lz = rawData.filter(function(d) {return d.livelihood_zone;});
 
-      setupVis(rawData);
+
+
+      setupVis(rawData, lz);
 
       setupSections();
 
@@ -162,7 +166,7 @@ var scrollVis = function() {
    *
    * NOTE: don't be tempted to group the elements together. Makes selection for transitions more complicated than needs to be.
    */
-  setupVis = function(data) {
+  setupVis = function(data, lz) {
     // Common chart elements
 
     // x-axis
@@ -185,6 +189,18 @@ var scrollVis = function() {
           .attr("y", -20)
           .text("percent of stunted children under 5")
           .style("opacity", 0);
+
+    // images (lz icons)
+     var imgs = g.selectAll("image")
+        .data(lz)
+     .enter().append("image")
+        .attr("class", "lz-icons")
+         .attr("xlink:href", function(d) {return "/img/" +  d.livelihood_zone + ".png"})
+         .attr("x", d3.max(data, function(element) { return x(element.avg2010 * 1.03); }))
+         .attr("y", function(d) {return y(d.livelihood_zone)})
+        //  .attr("height", y.bandwidth())
+         .attr("height", 33) // hard code temporarily
+         .style("opacity", 0);
 
 
          // FRAME 0: initial settings
@@ -315,6 +331,8 @@ var scrollVis = function() {
             .duration(600)
             .style("opacity", 0)
 
+
+
     // show current
     g.selectAll(".rwanda-title")
       .transition()
@@ -347,7 +365,10 @@ var scrollVis = function() {
     g.selectAll(".x.label")
               .transition()
               .duration(600)
-              .style("opacity", 1)    
+              .style("opacity", 1)
+
+
+
 
     g.selectAll(".dot.y1")
       .transition()
@@ -364,6 +385,8 @@ var scrollVis = function() {
       .transition()
       .duration(600)
       .style("opacity", 0)
+
+    hideLZ();
   }
 
 
@@ -388,6 +411,8 @@ var scrollVis = function() {
       .transition()
       .duration(600)
       .style("opacity", 1.0)
+
+      showLZ();
 
     g.selectAll(".dot.y1")
       .transition()
@@ -552,7 +577,20 @@ var scrollVis = function() {
    * HELPER FUNCTIONS
    */
 
+   function showLZ() {
+     g.selectAll(".lz-icons")
+         .transition()
+         .duration(600)
+         .style("opacity", 1)
+   }
 
+
+  function hideLZ() {
+        g.selectAll(".lz-icons")
+            .transition()
+            .duration(600)
+            .style("opacity", 0)
+      }
   /**
    * UPDATE FUNCTIONS
    *
