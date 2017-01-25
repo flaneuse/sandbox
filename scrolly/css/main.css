@@ -14,7 +14,6 @@ body{
 .dot {
   stroke: #333;
   stroke-width: 0.5;
-  opacity: 1;
 }
 
 .dot_mask {

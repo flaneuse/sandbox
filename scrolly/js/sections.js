@@ -174,68 +174,56 @@ var scrollVis = function() {
          .attr("class", "y axis")
     g.select(".y.axis").style("opacity", 1);
 
-// Initial national average, 2010.
-    var dotGroup2010 = g.selectAll("dot")
+// FRAME 1: Initial national average, 2010.
+    var dotGroup2010 = g.append("g")
+      .attr("class", "dot y1")
+      .selectAll("dot")
          .data(data)
       .enter().append("circle")
-         .attr("class", "dot")
          .attr("cx", function(d) {return x(d.natl2010)})
          .attr("cy", height/2)
          .attr("r", Math.sqrt(Math.pow(radius, 2)*13)) // Calc equal area.
          .style("fill", function(d) {return z(d.natl2010)})
-         .style("fill-opacity", 1)
-       .transition()
-         .duration(2000)
-         .attr("r", radius)
-         .attr("cy", function(d) {return y(d.livelihood_zone)})
-      // .transition()
-      //   .delay(2500)
-      //   .duration(2000)
-        .attr("cx", function(d) {return x(d.avg2010)})
-        .style("fill", function(d) {return z(d.avg2010)})
 
-        var dotMask2010 = g.selectAll("dot")
-             .data(data)
-          .enter().append("circle")
-             .attr("class", "dot")
-             .attr("cx", function(d) {return x(d.avg2010)})
-             .attr("cy", function(d) {return y(d.livelihood_zone)})
-             .attr("r", radius) // Calc equal area.
-             .style("fill", "white")
-             .style("stroke", "white")
-             .style("fill-opacity", 1)
+    g.select(".dot.y1").style("opacity", 0);
+            //  .transition()
+          //  .duration(2000)
+          //  .attr("r", radius)
+          //  .attr("cy", function(d) {return y(d.livelihood_zone)})
+        // .transition()
+        //   .delay(2500)
+        //   .duration(2000)
+          // .attr("cx", function(d) {return x(d.avg2010)})
+          // .style("fill", function(d) {return z(d.avg2010)})
 
-    // count openvis title
+// Dot mask to underlie 2010 data when opacity is changed.
+        // var dotMask2010 = g.selectAll("dot")
+        //      .data(data)
+        //   .enter().append("circle")
+        //      .attr("class", "dot")
+        //      .attr("cx", function(d) {return x(d.avg2010)})
+        //      .attr("cy", function(d) {return y(d.livelihood_zone)})
+        //      .attr("r", radius) // Calc equal area.
+        //      .style("fill", "white")
+        //      .style("stroke", "white")
+        //      .style("fill-opacity", 1)
+
+    // FRAME 0: initial settings
     g.append("text")
-      .attr("class", "title openvis-title")
+      .attr("class", "title rwanda-title")
       .attr("x", width / 2)
       .attr("y", height / 3)
       .text("title");
 
     g.append("text")
-      .attr("class", "sub-title openvis-title")
+      .attr("class", "sub-title rwanda-title")
       .attr("x", width / 2)
       .attr("y", (height / 3) + (height / 5) )
       .text("tbd");
 
-    g.selectAll(".openvis-title")
+    g.selectAll(".rwanda-title")
       .attr("opacity", 0);
 
-    // count filler word count title
-    g.append("text")
-      .attr("class", "title count-title highlight")
-      .attr("x", width / 2)
-      .attr("y", height / 3)
-      .text("180");
-
-    g.append("text")
-      .attr("class", "sub-title count-title")
-      .attr("x", width / 2)
-      .attr("y", (height / 3) + (height / 5) )
-      .text("Filler Words");
-
-    g.selectAll(".count-title")
-      .attr("opacity", 0);
   };
 
   /**
@@ -248,8 +236,8 @@ var scrollVis = function() {
   setupSections = function() {
     // activateFunctions are called each
     // time the active section changes
-    activateFunctions[0] = show0;
-    activateFunctions[1] = show1;
+    activateFunctions[0] = showInit;
+    activateFunctions[1] = showNatl2010;
     activateFunctions[2] = show2;
     activateFunctions[3] = show3;
     activateFunctions[4] = show4;
@@ -286,50 +274,54 @@ var scrollVis = function() {
    */
 
   /**
-   * show0 - initial title
+   * showInit - initial title
    *
    * hides: count title
    * (no previous step to hide)
    * shows: intro title
    *
    */
-  function show0() {
-    g.selectAll(".count-title")
+  function showInit() {
+    // previous (null)
+
+    // subsequent
+    g.selectAll(".dot.y1")
       .transition()
       .duration(0)
-      .attr("opacity", 0);
+      .style("opacity", 0);
 
-    g.selectAll(".openvis-title")
+    // show current
+    g.selectAll(".rwanda-title")
       .transition()
       .duration(600)
-      .attr("opacity", 1.0);
+      .style("opacity", 1.0);
   }
 
   /**
-   * show1 - filler counts
+   * showNatl2010 - show the nat'l avg. in 2010
    *
    * hides: intro title
-   * hides: square grid
-   * shows: filler count title
+   * hides: transition nat'l --> LZ.
+   * shows: nat'l avg.
    *
    */
-  function show1() {
+  function showNatl2010() {
     // previous
-    g.selectAll(".openvis-title")
+    g.selectAll(".rwanda-title")
       .transition()
       .duration(0)
-      .attr("opacity", 0);
+      .style("opacity", 0);
 
     // subsequent
     g.selectAll(".square")
       .transition()
       .duration(0)
-      .attr("opacity", 0);
+      .style("opacity", 0);
 
-    g.selectAll(".count-title")
+    g.selectAll(".dot.y1")
       .transition()
       .duration(600)
-      .attr("opacity", 1.0);
+      .style("opacity", 1.0);
   }
 
 
@@ -343,7 +335,7 @@ var scrollVis = function() {
    */
   function show2() {
     // previous
-    g.selectAll(".openvis-title")
+    g.selectAll(".rwanda-title")
       .transition()
       .duration(0)
       .attr("opacity", 0);
@@ -370,7 +362,7 @@ var scrollVis = function() {
    */
   function show3() {
     // previous
-    g.selectAll(".openvis-title")
+    g.selectAll(".rwanda-title")
       .transition()
       .duration(0)
       .attr("opacity", 0);
@@ -389,7 +381,7 @@ var scrollVis = function() {
 
 
   /**
-   * show1 - filler counts
+   * showNatl2010 - filler counts
    *
    * hides: intro title
    * hides: square grid
@@ -398,7 +390,7 @@ var scrollVis = function() {
    */
   function show4() {
     // previous
-    g.selectAll(".openvis-title")
+    g.selectAll(".rwanda-title")
       .transition()
       .duration(0)
       .attr("opacity", 0);
@@ -417,7 +409,7 @@ var scrollVis = function() {
 
 
   /**
-   * show1 - filler counts
+   * showNatl2010 - filler counts
    *
    * hides: intro title
    * hides: square grid
@@ -426,7 +418,7 @@ var scrollVis = function() {
    */
   function show5() {
     // previous
-    g.selectAll(".openvis-title")
+    g.selectAll(".rwanda-title")
       .transition()
       .duration(0)
       .attr("opacity", 0);
@@ -445,7 +437,7 @@ var scrollVis = function() {
 
 
   /**
-   * show1 - filler counts
+   * showNatl2010 - filler counts
    *
    * hides: intro title
    * hides: square grid
@@ -454,7 +446,7 @@ var scrollVis = function() {
    */
   function show6() {
     // previous
-    g.selectAll(".openvis-title")
+    g.selectAll(".rwanda-title")
       .transition()
       .duration(0)
       .attr("opacity", 0);
@@ -473,7 +465,7 @@ var scrollVis = function() {
 
 
   /**
-   * show1 - filler counts
+   * showNatl2010 - filler counts
    *
    * hides: intro title
    * hides: square grid
@@ -482,7 +474,7 @@ var scrollVis = function() {
    */
   function show7() {
     // previous
-    g.selectAll(".openvis-title")
+    g.selectAll(".rwanda-title")
       .transition()
       .duration(0)
       .attr("opacity", 0);
