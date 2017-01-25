@@ -283,7 +283,7 @@ var scrollVis = function() {
 
 // FRAME 3: map
   svg.append("image")
-    .attr("class", "map")
+    .attr("class", "rw-map")
     .attr("xlink:href", function(d) {return "/img/test_map.png"})
     .attr("width", "100%")
     .attr("height", "100%")
@@ -472,7 +472,7 @@ var scrollVis = function() {
         .style("opacity", 1.0)
 
         // subsequent
-        svg.selectAll(".map")
+        svg.selectAll(".rw-map")
           .transition()
           .duration(0)
           .style("opacity", 0);
@@ -495,7 +495,7 @@ var scrollVis = function() {
     hideValues();
 
 
-    svg.selectAll(".map")
+    svg.selectAll(".rw-map")
       .transition()
       .duration(600)
       .style("opacity", 1);
