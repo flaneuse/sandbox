@@ -147,7 +147,7 @@ var scrollVis = function() {
       lz = rawData.filter(function(d) {return d.livelihood_zone;});
 
       natlData = rawData.filter(function(d, i) {return i == 0}) // just get one, not loads.
-console.log(natlData)
+
 
       setupVis(rawData, lz, natlData);
 
@@ -265,6 +265,21 @@ console.log(natlData)
       .attr("dy", 10) // 1/2 of font size, so more centered.
       .text(function(d) {return d3.format(".0%")(d.natl2010)})
       .style("opacity", 0);
+
+// FRAME 2: Annotations
+// labels
+      var pctLab = svg.selectAll("g").selectAll(".val-labels")
+          .data(data)
+          .enter().append("text")
+            .attr("class", "val-labels")
+            .filter(function(d, i) {return i == 0 | i == 12;})
+            .attr("x", function(d) {return x(d.avg2010)})
+            .attr("dx", -radius*2)
+            .attr("y", function(d) {return y(d.livelihood_zone)})
+            // .attr("y", function(d) {return y(d.livelihood_zone)+y.bandwidth()/2})
+            // .attr("dy", y.bandwidth()/4)
+            .text(function(d) {return d3.format(".0%")(d.avg2010)})
+            .style("opacity", 0)
 
 
 
@@ -405,6 +420,8 @@ console.log(natlData)
     hideLZ();
 
     hideAvg();
+
+    hideValues();
   }
 
 
@@ -441,6 +458,12 @@ console.log(natlData)
     .duration(1500)
         .attr("cx", function(d) {return x(d.avg2010)})
         .style("fill", function(d) {return z(d.avg2010)});
+
+    g.selectAll(".val-labels")
+        .transition()
+        .delay(2500)
+        .duration(600)
+        .style("opacity", 1.0)
 
         // subsequent
         g.selectAll(".square")
@@ -660,7 +683,15 @@ function hideY() {
     .transition()
     .duration(0)
     .style("opacity", 0)
-  }
+  };
+
+  // -- PCT LABELS --
+  function hideValues() {
+    g.selectAll(".val-labels")
+    .transition()
+    .duration(0)
+    .style("opacity", 0)
+};
 
   /**
   * TRANSITION VARIABLES
