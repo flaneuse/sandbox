@@ -189,7 +189,7 @@ var scrollVis = function() {
           .attr("class", "x label")
           .attr("x", 0)
           .attr("y", -20)
-          .text("percent of stunted children under 5")
+          .text("percent of stunted children under 5 (2010)")
           .style("opacity", 0);
 
     // images (lz icons)
@@ -281,7 +281,28 @@ var scrollVis = function() {
             .text(function(d) {return d3.format(".0%")(d.avg2010)})
             .style("opacity", 0)
 
-
+// FRAME 3: map
+  svg.append("image")
+    .attr("class", "map")
+    .attr("xlink:href", function(d) {return "/img/test_map.png"})
+    .style("opacity", 0)
+    .on("load", function(d) {
+      var myImage = new Image(); // used to center image
+      myImage.onload = function() {
+        d3.select(".map")
+            .attr("width", "100%")
+            .attr("height", "100%")
+            .attr("x", (width + margin.left + margin.right - this.width)/2)
+            .attr("y", (height + margin.top + margin.bottom - this.height)/2)
+            .style("opacity", 0);
+    }
+      myImage.src = "/img/test_map.png";
+});
+      // .attr("x", 0)
+      // .attr("y", 0)
+      // .attr("height", height)
+      // .attr("width", width)
+      //  .style("opacity", 1);
 
 // Dot mask to underlie 2010 data when opacity is changed.
         // var dotMask2010 = g.selectAll("dot")
@@ -311,7 +332,7 @@ var scrollVis = function() {
     activateFunctions[0] = showInit;
     activateFunctions[1] = showNatl2010;
     activateFunctions[2] = showLZ2010;
-    activateFunctions[3] = show3;
+    activateFunctions[3] = showMap;
     activateFunctions[4] = show4;
     activateFunctions[5] = show5;
     activateFunctions[6] = show6;
@@ -466,33 +487,35 @@ var scrollVis = function() {
         .style("opacity", 1.0)
 
         // subsequent
-        g.selectAll(".square")
+        svg.selectAll(".map")
           .transition()
           .duration(0)
           .style("opacity", 0);
   }
 
   /**
-   * show3 - filler counts
+   * showMap - filler counts
    *
    * hides: intro title
    * hides: square grid
    * shows: filler count title
    *
    */
-  function show3() {
+  function showMap() {
     // previous
-    g.selectAll(".rwanda-title")
-      .transition()
-      .duration(0)
-      .style("opacity", 0);
+    hideX();
+    hideY();
+    hideLZ();
+    hideAvg();
+    hideValues();
 
-    // subsequent
-    g.selectAll(".square")
-      .transition()
-      .duration(0)
-      .style("opacity", 0);
 
+    svg.selectAll(".map")
+      .transition()
+      .duration(600)
+      .style("opacity", 1);
+
+// subsequent
     g.selectAll(".count-title")
       .transition()
       .duration(600)

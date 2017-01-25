@@ -79,3 +79,14 @@ body{
 .natl-annot {
   text-anchor: end;
 }
+
+.val-labels text{
+  text-anchor: end;
+  fill: #555;
+}
+
+.map {
+  display: block;
+margin-left: auto;
+margin-right: auto 
+}
