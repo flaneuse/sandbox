@@ -83,6 +83,13 @@ body{
 
 .natl-annot {
   text-anchor: end;
+  font-family: "Oxygen", sans-serif;
+}
+
+.natl-annot2010 {
+  text-anchor: start;
+  font-size: 28px;
+  font-family: "Oxygen", sans-serif;
 }
 
 .val-labels text{

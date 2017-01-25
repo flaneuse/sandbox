@@ -247,7 +247,7 @@ var scrollVis = function() {
    myG.selectAll(".natl-annot")
          .data(natlData)
        .enter().append("text")
-         .attr("class", "natl natl-annot")
+         .attr("class", "natl-annot")
          .attr("x", function(d) {return x(d.natl2010)})
          .attr("y", 40) // NOTE: hard coding for now.
          // .attr("y", y.bandwidth())
@@ -263,11 +263,10 @@ var scrollVis = function() {
                .attr("x", function(d) {return x(d.natl2010)})
                .attr("y", 40) // NOTE: hard coding for now.
                // .attr("y", y.bandwidth())
-               .attr("dx", -10)
+               .attr("dx", 10)
                .text(function(d) {return "2010: " + d3.format(".0%")(d.natl2010)})
                .style("opacity", 0)
-               .style("font-size", "32pt")
-               .style("text-anchor", "start");
+               .style("fill", function(d) {return z(d.natl2010)});
 
 // FRAME 3: map
            svg.append("image")
@@ -560,7 +559,7 @@ var scrollVis = function() {
     // previous
     svg.selectAll(".rw-map")
       .transition()
-      .duration(2000)
+      .duration(600)
       .style("opacity", 0);
 
 
@@ -597,6 +596,7 @@ myG.selectAll(".dot.y1")
     .style("opacity", 1)
     .transition()
     .delay(1000)
+    .duration(1000)
     .attr("cy", function(d) {return y(d.livelihood_zone)})
     .attr("transform","translate(0,0)")
     .style("fill", function(d) {return z(d.avg2010)})
@@ -613,14 +613,17 @@ myG.selectAll(".natl")
     .delay(1000)
   .duration(1500)
   .attr("x1", function(d) {return x(d.natl2014);})
-  .attr("x2", function(d) {return x(d.natl2014);})
-  .selectAll("natl-annot")
+  .attr("x2", function(d) {return x(d.natl2014);});
 
   // change avg. label
   myG.selectAll(".natl-annot")
-    .attr("x", function(d) {return x(d.natl2014);})
     .text(function(d) {return "2014: " + d3.format(".0%")(d.natl2014)})
-    .style("font-size", "32px");
+      .style("font-size", "28px")
+    .transition()
+    .delay(1000)
+  .duration(1500)
+      .style("fill", function(d) {return z(d.natl2014)})
+      .attr("x", function(d) {return x(d.natl2014);});
 
 // subsequent
     myG.selectAll(".count-title")
@@ -692,6 +695,11 @@ function hideY() {
   // -- NATL AVG LINE --
   function showAvg() {
     myG.selectAll(".natl")
+    .transition()
+    .duration(600)
+    .style("opacity", 1)
+
+    myG.selectAll(".natl-annot")
     .transition()
     .duration(600)
     .style("opacity", 1)
