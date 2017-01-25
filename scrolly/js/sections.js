@@ -507,6 +507,7 @@ var scrollVis = function() {
         .duration(600)
         .attr("cx", function(d) {return d.imgX;})
         .attr("cy", function(d) {return d.imgY;})
+        .style("fill", function(d) {return z(d.avg2010)});
         .attr("transform","translate(-105,-40)")
         .transition()
         // .delay(600)
@@ -532,17 +533,39 @@ var scrollVis = function() {
    */
   function showChange() {
     // previous
-    g.selectAll(".rwanda-title")
+    svg.selectAll(".rw-map")
       .transition()
-      .duration(0)
+      .duration(2000)
       .style("opacity", 0);
 
-    // subsequent
-    g.selectAll(".square")
-      .transition()
-      .duration(0)
-      .style("opacity", 0);
 
+// current: dot plot reappear, fade map
+// change title
+g.selectAll(".x.label")
+  .text("percent of stunted children under 5")
+
+showX();
+showY();
+showLZ();
+showAvg();
+
+// reappear dots
+g.selectAll(".dot.y1")
+    .transition()
+    .duration(600)
+    .style("opacity", 1)
+    .transition()
+    .delay(1000)
+    .attr("cy", function(d) {return y(d.livelihood_zone)})
+    .attr("transform","translate(0,0)")
+    .style("fill", function(d) {return z(d.avg2010)});
+    .attr("cx", function(d) {return x(d.avg2010)});
+
+// add 2010/2014 annotation
+
+// change avg. line
+
+// subsequent
     g.selectAll(".count-title")
       .transition()
       .duration(600)
