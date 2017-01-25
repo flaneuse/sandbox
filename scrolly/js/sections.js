@@ -8,9 +8,12 @@
 var scrollVis = function() {
   // constants to define the size
   // and margins of the vis area.
-  var width = 600;
-  var height = 520;
-  var margin = {top:0, left:20, bottom:40, right:10};
+  // var width = 600;
+  // var height = 520;
+  // var margin = {top:0, left:20, bottom:40, right:10};
+  var margin = {top: 30, right: 75, bottom: 0, left: 250},
+    width = 900 - margin.left - margin.right,
+    height = 550 - margin.top - margin.bottom;
 
   // Keep track of which visualization
   // we are on and which was the last
@@ -48,7 +51,7 @@ var scrollVis = function() {
        .rangeBands([0, height], 0.2, 0);
 
   var z = d3.scale.linear()
-  .range(["white", "steelblue"])
+  .range(["red", "steelblue"])
     .interpolate(d3.interpolateLab)
        .domain([1, 0.2]);
 
@@ -159,22 +162,18 @@ var scrollVis = function() {
    */
   setupVis = function(data) {
     // x-axis
-    svg.append("g")
+    g.append("g")
          .call(xAxis)
          .attr("class", "x axis")
-        //  .attr("transform", "translate(0," + -margin.top + ")");
-      .attr("transform", "translate(0," + height + ")")
+         .attr("transform", "translate(0," + height + ")")
     g.select(".x.axis").style("opacity", 1); // ! Change to 0
 
     // y-axis
-    svg.append("g")
+    g.append("g")
          .call(yAxis)
          .attr("class", "y axis")
-        //  .attr("transform", "translate(0," + -margin.top + ")");
-      .attr("transform", "translate(" + width + ", 0)")
     g.select(".y.axis").style("opacity", 1);
 
-console.log(typeof(data.length))
 
     var dotGroup2010 = g.selectAll("dot")
          .data(data)
