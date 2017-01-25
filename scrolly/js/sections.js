@@ -321,11 +321,8 @@ var scrollVis = function() {
     activateFunctions[1] = showNatl2010;
     activateFunctions[2] = showLZ2010;
     activateFunctions[3] = showMap;
-    activateFunctions[4] = show4;
-    activateFunctions[5] = show5;
-    activateFunctions[6] = show6;
-    activateFunctions[7] = show7;
-    activateFunctions[8] = show6;
+    activateFunctions[4] = showChange;
+
 
     // updateFunctions are called while
     // in a particular section to update
@@ -333,7 +330,7 @@ var scrollVis = function() {
     // Most sections do not need to be updated
     // for all scrolling and so are set to
     // no-op functions.
-    for(var i = 0; i < 9; i++) {
+    for(var i = 0; i < 5; i++) {
       updateFunctions[i] = function() {};
     }
     // If using any updateFunctions, call it here.
@@ -451,6 +448,7 @@ var scrollVis = function() {
       .style("opacity", 0);
 
     // current: divide into LZ.
+    showX();
     showY();
 
     showLZ();
@@ -532,7 +530,7 @@ var scrollVis = function() {
    * shows: filler count title
    *
    */
-  function show4() {
+  function showChange() {
     // previous
     g.selectAll(".rwanda-title")
       .transition()
@@ -551,89 +549,6 @@ var scrollVis = function() {
       .style("opacity", 1.0);
   }
 
-
-  /**
-   * showNatl2010 - filler counts
-   *
-   * hides: intro title
-   * hides: square grid
-   * shows: filler count title
-   *
-   */
-  function show5() {
-    // previous
-    g.selectAll(".rwanda-title")
-      .transition()
-      .duration(0)
-      .style("opacity", 0);
-
-    // subsequent
-    g.selectAll(".square")
-      .transition()
-      .duration(0)
-      .style("opacity", 0);
-
-    g.selectAll(".count-title")
-      .transition()
-      .duration(600)
-      .style("opacity", 1.0);
-  }
-
-
-  /**
-   * showNatl2010 - filler counts
-   *
-   * hides: intro title
-   * hides: square grid
-   * shows: filler count title
-   *
-   */
-  function show6() {
-    // previous
-    g.selectAll(".rwanda-title")
-      .transition()
-      .duration(0)
-      .style("opacity", 0);
-
-    // subsequent
-    g.selectAll(".square")
-      .transition()
-      .duration(0)
-      .style("opacity", 0);
-
-    g.selectAll(".count-title")
-      .transition()
-      .duration(600)
-      .style("opacity", 1.0);
-  }
-
-
-  /**
-   * showNatl2010 - filler counts
-   *
-   * hides: intro title
-   * hides: square grid
-   * shows: filler count title
-   *
-   */
-  function show7() {
-    // previous
-    g.selectAll(".rwanda-title")
-      .transition()
-      .duration(0)
-      .style("opacity", 0);
-
-    // subsequent
-    g.selectAll(".square")
-      .transition()
-      .duration(0)
-      .style("opacity", 0);
-
-    g.selectAll(".count-title")
-      .transition()
-      .duration(600)
-      .style("opacity", 1.0);
-  }
 
 
 
