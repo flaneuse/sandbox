@@ -146,8 +146,10 @@ var scrollVis = function() {
       // filter out just the livelihood zone names.
       lz = rawData.filter(function(d) {return d.livelihood_zone;});
 
+      natlData = rawData.filter(function(d, i) {return i == 0}) // just get one, not loads.
+console.log(natlData)
 
-      setupVis(rawData, lz);
+      setupVis(rawData, lz, natlData);
 
       setupSections();
 
@@ -166,7 +168,7 @@ var scrollVis = function() {
    *
    * NOTE: don't be tempted to group the elements together. Makes selection for transitions more complicated than needs to be.
    */
-  setupVis = function(data, lz) {
+  setupVis = function(data, lz, natlData) {
     // Common chart elements
 
     // x-axis
@@ -199,7 +201,7 @@ var scrollVis = function() {
          .attr("x", d3.max(data, function(element) { return x(element.avg2010 * 1.03); }))
          .attr("y", function(d) {return y(d.livelihood_zone)})
         //  .attr("height", y.bandwidth())
-         .attr("height", 33) // hard code temporarily
+         .attr("height", 33) // NOTE: hard code temporarily
          .style("opacity", 0);
 
 
@@ -219,6 +221,29 @@ var scrollVis = function() {
          g.selectAll(".rwanda-title")
            .style("opacity", 0);
 
+// FRAME 2: Natl. avg line
+   svg.selectAll("g").selectAll(".natl")
+       .data(natlData)
+     .enter().append("line")
+       .attr("class", "natl")
+       .attr("y1", 0)
+       .attr("y2", height + margin.top + margin.bottom)
+       .attr("x1", function(d) {return x(d.natl2010)})
+       .attr("x2", function(d) {return x(d.natl2010)})
+       .style("opacity", 0);
+
+   // national annotation
+   svg.selectAll("g").selectAll(".natl-annot")
+         .data(natlData)
+       .enter().append("text")
+         .attr("class", "natl natl-annot")
+         .attr("x", function(d) {return x(d.natl2010)})
+         .attr("y", 40) // NOTE: hard coding for now.
+         // .attr("y", y.bandwidth())
+         .attr("dx", -10)
+         .text(function(d) {return "national average: " + d3.format(".0%")(d.natl2010)})
+         .style("opacity", 0);
+
 // FRAME 1: Initial national average, 2010.
     var dotGroup2010 = g.selectAll("dot")
          .data(data)
@@ -232,12 +257,12 @@ var scrollVis = function() {
 
   // value label for nat'l avg.
     var natlLabel = svg.selectAll("g").selectAll(".natl-value")
-      .data(data)
+      .data(natlData)
     .enter().append("text")
       .attr("class", "natl-value")
       .attr("x", function(d) {return x(d.natl2010)})
       .attr("y", height/2)
-      .attr("dy", 12) // 1/2 of font size, so more centered.
+      .attr("dy", 10) // 1/2 of font size, so more centered.
       .text(function(d) {return d3.format(".0%")(d.natl2010)})
       .style("opacity", 0);
 
@@ -372,12 +397,14 @@ var scrollVis = function() {
     g.selectAll(".natl-value")
         .transition()
         .duration(600)
-        .style("opacity", 1)
+        .style("opacity", 1);
 
     // hide subsequent: remove y axis
     hideY();
 
     hideLZ();
+
+    hideAvg();
   }
 
 
@@ -402,14 +429,16 @@ var scrollVis = function() {
 
     showLZ();
 
+    showAvg();
+
     g.selectAll(".dot.y1")
       .transition()
         .duration(600)
         .attr("r", radius)
         .attr("cy", function(d) {return y(d.livelihood_zone)})
-  // .transition()
-    // .delay(2500)
-    // .duration(2000)
+  .transition()
+    .delay(1000)
+    .duration(1500)
         .attr("cx", function(d) {return x(d.avg2010)})
         .style("fill", function(d) {return z(d.avg2010)});
 
@@ -569,24 +598,24 @@ function showX() {
   g.selectAll(".axis.x")
       .transition()
       .duration(600)
-      .style("opacity", 1)
+      .style("opacity", 1);
 
   g.selectAll(".x.label")
           .transition()
           .duration(600)
-          .style("opacity", 1)
+          .style("opacity", 1);
 }
 
 function hideX() {
   g.selectAll(".axis.x")
       .transition()
       .duration(0)
-      .style("opacity", 0)
+      .style("opacity", 0);
 
   g.selectAll(".x.label")
           .transition()
           .duration(0)
-          .style("opacity", 0)
+          .style("opacity", 0);
 }
 
 // -- Y-AXIS --
@@ -594,14 +623,14 @@ function showY(){
   g.selectAll(".axis.y")
     .transition()
     .duration(600)
-    .style("opacity", 1.0)
+    .style("opacity", 1.0);
 }
 
 function hideY() {
   g.selectAll(".axis.y")
     .transition()
     .duration(0)
-    .style("opacity", 0)
+    .style("opacity", 0);
 }
 
 // -- LIVELIHOOD ZONE MAPS --
@@ -609,15 +638,37 @@ function hideY() {
      g.selectAll(".lz-icons")
          .transition()
          .duration(600)
-         .style("opacity", 1)
+         .style("opacity", 1);
    }
 
   function hideLZ() {
         g.selectAll(".lz-icons")
             .transition()
             .duration(600)
-            .style("opacity", 0)
+            .style("opacity", 0);
       }
+  // -- NATL AVG LINE --
+  function showAvg() {
+    g.selectAll(".natl")
+    .transition()
+    .duration(600)
+    .style("opacity", 1)
+  }
+
+  function hideAvg() {
+    g.selectAll(".natl")
+    .transition()
+    .duration(0)
+    .style("opacity", 0)
+  }
+
+  /**
+  * TRANSITION VARIABLES
+  **/
+  var basicTransit = d3.transition()
+    .delay(1000)
+    .duration(4000);
+
   /**
    * UPDATE FUNCTIONS
    *

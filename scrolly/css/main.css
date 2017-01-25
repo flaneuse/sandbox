@@ -75,3 +75,7 @@ body{
   fill: #0ff;
   text-anchor: middle;
 }
+
+.natl-annot {
+  text-anchor: end;
+}
