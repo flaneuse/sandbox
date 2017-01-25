@@ -142,9 +142,9 @@ var scrollVis = function() {
 
           // z.domain([d3.max(rawData, function(element) { return element.avg; }), 0]);
 
+      // -- MILD DATA PROCESSING --
       // filter out just the livelihood zone names.
       lz = rawData.filter(function(d) {return d.livelihood_zone;});
-
 
 
       setupVis(rawData, lz);
@@ -203,7 +203,7 @@ var scrollVis = function() {
          .style("opacity", 0);
 
 
-         // FRAME 0: initial settings
+// FRAME 0: initial settings
          g.append("text")
            .attr("class", "title rwanda-title")
            .attr("x", width / 2)
@@ -217,7 +217,7 @@ var scrollVis = function() {
            .text("tbd");
 
          g.selectAll(".rwanda-title")
-           .attr("opacity", 0);
+           .style("opacity", 0);
 
 // FRAME 1: Initial national average, 2010.
     var dotGroup2010 = g.selectAll("dot")
@@ -230,15 +230,16 @@ var scrollVis = function() {
          .style("fill", function(d) {return z(d.natl2010)})
          .style("opacity", 0);
 
-    var natlLabel = g.selectAll("text")
+  // value label for nat'l avg.
+    var natlLabel = svg.selectAll("g").selectAll(".natl-value")
       .data(data)
     .enter().append("text")
-      .attr("class", "value-label")
-      .attr("id", "natl")
+      .attr("class", "natl-value")
       .attr("x", function(d) {return x(d.natl2010)})
       .attr("y", height/2)
-      .text("text")
-      .style("opacity", 1);
+      .attr("dy", 12) // 1/2 of font size, so more centered.
+      .text(function(d) {return d3.format(".0%")(d.natl2010)})
+      .style("opacity", 0);
 
 
 
@@ -305,6 +306,7 @@ var scrollVis = function() {
    */
 
   /**
+   * -- FRAME 0 --
    * showInit - initial title
    *
    * hides: count title
@@ -315,7 +317,7 @@ var scrollVis = function() {
   function showInit() {
     // previous (null)
 
-    // subsequent
+    // subsequent: hide natl avg. graph
     g.selectAll(".dot.y1")
       .transition()
       .duration(0)
@@ -331,6 +333,11 @@ var scrollVis = function() {
             .duration(600)
             .style("opacity", 0)
 
+    g.selectAll(".natl-value")
+              .transition()
+              .duration(0)
+              .style("opacity", 0);
+
 
 
     // show current
@@ -341,6 +348,7 @@ var scrollVis = function() {
   }
 
   /**
+   * -- FRAME 1 --
    * showNatl2010 - show the nat'l avg. in 2010
    *
    * hides: intro title
@@ -368,8 +376,6 @@ var scrollVis = function() {
               .style("opacity", 1)
 
 
-
-
     g.selectAll(".dot.y1")
       .transition()
       .duration(600)
@@ -379,6 +385,11 @@ var scrollVis = function() {
       .attr("cy", height/2)
       .attr("r", Math.sqrt(Math.pow(radius, 2)*13)) // Calc equal area.
       .style("fill", function(d) {return z(d.natl2010)});
+
+    g.selectAll(".natl-value")
+        .transition()
+        .duration(600)
+        .style("opacity", 1)
 
     // hide subsequent: remove y axis
     g.selectAll(".axis.y")
@@ -391,6 +402,7 @@ var scrollVis = function() {
 
 
   /**
+   * FRAME 2
    * showLZ2010 - filler counts
    *
    * hides: intro title
@@ -400,10 +412,10 @@ var scrollVis = function() {
    */
   function showLZ2010() {
     // previous
-    g.selectAll(".rwanda-title")
+    g.selectAll(".natl-value")
       .transition()
       .duration(0)
-      .attr("opacity", 0);
+      .style("opacity", 0);
 
     // current: divide into LZ.
 
@@ -429,7 +441,7 @@ var scrollVis = function() {
         g.selectAll(".square")
           .transition()
           .duration(0)
-          .attr("opacity", 0);
+          .style("opacity", 0);
   }
 
   /**
@@ -445,18 +457,18 @@ var scrollVis = function() {
     g.selectAll(".rwanda-title")
       .transition()
       .duration(0)
-      .attr("opacity", 0);
+      .style("opacity", 0);
 
     // subsequent
     g.selectAll(".square")
       .transition()
       .duration(0)
-      .attr("opacity", 0);
+      .style("opacity", 0);
 
     g.selectAll(".count-title")
       .transition()
       .duration(600)
-      .attr("opacity", 1.0);
+      .style("opacity", 1.0);
   }
 
 
@@ -473,18 +485,18 @@ var scrollVis = function() {
     g.selectAll(".rwanda-title")
       .transition()
       .duration(0)
-      .attr("opacity", 0);
+      .style("opacity", 0);
 
     // subsequent
     g.selectAll(".square")
       .transition()
       .duration(0)
-      .attr("opacity", 0);
+      .style("opacity", 0);
 
     g.selectAll(".count-title")
       .transition()
       .duration(600)
-      .attr("opacity", 1.0);
+      .style("opacity", 1.0);
   }
 
 
@@ -501,18 +513,18 @@ var scrollVis = function() {
     g.selectAll(".rwanda-title")
       .transition()
       .duration(0)
-      .attr("opacity", 0);
+      .style("opacity", 0);
 
     // subsequent
     g.selectAll(".square")
       .transition()
       .duration(0)
-      .attr("opacity", 0);
+      .style("opacity", 0);
 
     g.selectAll(".count-title")
       .transition()
       .duration(600)
-      .attr("opacity", 1.0);
+      .style("opacity", 1.0);
   }
 
 
@@ -529,18 +541,18 @@ var scrollVis = function() {
     g.selectAll(".rwanda-title")
       .transition()
       .duration(0)
-      .attr("opacity", 0);
+      .style("opacity", 0);
 
     // subsequent
     g.selectAll(".square")
       .transition()
       .duration(0)
-      .attr("opacity", 0);
+      .style("opacity", 0);
 
     g.selectAll(".count-title")
       .transition()
       .duration(600)
-      .attr("opacity", 1.0);
+      .style("opacity", 1.0);
   }
 
 
@@ -557,18 +569,18 @@ var scrollVis = function() {
     g.selectAll(".rwanda-title")
       .transition()
       .duration(0)
-      .attr("opacity", 0);
+      .style("opacity", 0);
 
     // subsequent
     g.selectAll(".square")
       .transition()
       .duration(0)
-      .attr("opacity", 0);
+      .style("opacity", 0);
 
     g.selectAll(".count-title")
       .transition()
       .duration(600)
-      .attr("opacity", 1.0);
+      .style("opacity", 1.0);
   }
 
 

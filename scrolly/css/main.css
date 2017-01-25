@@ -68,10 +68,10 @@ body{
   display:none;
 }
 
-.value-label .natl {
-  font-size: 16px;
+.natl-value {
+  font-size: 24px;
   font-family: "Oxygen", sans-serif;
   font-weight: bold;
-  fill: #fff;
+  fill: #0ff;
   text-anchor: middle;
 }
