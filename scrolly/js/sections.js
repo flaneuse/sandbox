@@ -323,15 +323,7 @@ var scrollVis = function() {
       .duration(0)
       .style("opacity", 0);
 
-    g.selectAll(".axis.x")
-        .transition()
-        .duration(600)
-        .style("opacity", 0)
-
-    g.selectAll(".x.label")
-            .transition()
-            .duration(600)
-            .style("opacity", 0)
+      hideX();
 
     g.selectAll(".natl-value")
               .transition()
@@ -365,16 +357,7 @@ var scrollVis = function() {
 
 
     // current: make nat'l avg. appear.
-    g.selectAll(".axis.x")
-      .transition()
-      .duration(600)
-      .style("opacity", 1.0)
-
-    g.selectAll(".x.label")
-              .transition()
-              .duration(600)
-              .style("opacity", 1)
-
+    showX();
 
     g.selectAll(".dot.y1")
       .transition()
@@ -392,10 +375,7 @@ var scrollVis = function() {
         .style("opacity", 1)
 
     // hide subsequent: remove y axis
-    g.selectAll(".axis.y")
-      .transition()
-      .duration(600)
-      .style("opacity", 0)
+    hideY();
 
     hideLZ();
   }
@@ -418,13 +398,9 @@ var scrollVis = function() {
       .style("opacity", 0);
 
     // current: divide into LZ.
+    showY();
 
-    g.selectAll(".axis.y")
-      .transition()
-      .duration(600)
-      .style("opacity", 1.0)
-
-      showLZ();
+    showLZ();
 
     g.selectAll(".dot.y1")
       .transition()
@@ -588,14 +564,53 @@ var scrollVis = function() {
   /**
    * HELPER FUNCTIONS
    */
+// -- X-AXIS --
+function showX() {
+  g.selectAll(".axis.x")
+      .transition()
+      .duration(600)
+      .style("opacity", 1)
 
+  g.selectAll(".x.label")
+          .transition()
+          .duration(600)
+          .style("opacity", 1)
+}
+
+function hideX() {
+  g.selectAll(".axis.x")
+      .transition()
+      .duration(0)
+      .style("opacity", 0)
+
+  g.selectAll(".x.label")
+          .transition()
+          .duration(0)
+          .style("opacity", 0)
+}
+
+// -- Y-AXIS --
+function showY(){
+  g.selectAll(".axis.y")
+    .transition()
+    .duration(600)
+    .style("opacity", 1.0)
+}
+
+function hideY() {
+  g.selectAll(".axis.y")
+    .transition()
+    .duration(0)
+    .style("opacity", 0)
+}
+
+// -- LIVELIHOOD ZONE MAPS --
    function showLZ() {
      g.selectAll(".lz-icons")
          .transition()
          .duration(600)
          .style("opacity", 1)
    }
-
 
   function hideLZ() {
         g.selectAll(".lz-icons")
