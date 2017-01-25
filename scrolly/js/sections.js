@@ -159,6 +159,8 @@ var scrollVis = function() {
    * @param fillerCounts - nested data that includes
    *  element for each filler word type.
    * @param histData - binned histogram data
+   *
+   * NOTE: don't be tempted to group the elements together. Makes selection for transitions more complicated than needs to be.
    */
   setupVis = function(data) {
     // x-axis
@@ -175,26 +177,17 @@ var scrollVis = function() {
     g.select(".y.axis").style("opacity", 1);
 
 // FRAME 1: Initial national average, 2010.
-    var dotGroup2010 = g.append("g")
-      .attr("class", "dot y1")
-      .selectAll("dot")
+    var dotGroup2010 = g.selectAll("dot")
          .data(data)
       .enter().append("circle")
+          .attr("class", "dot y1")
          .attr("cx", function(d) {return x(d.natl2010)})
          .attr("cy", height/2)
          .attr("r", Math.sqrt(Math.pow(radius, 2)*13)) // Calc equal area.
-         .style("fill", function(d) {return z(d.natl2010)})
+         .style("fill", function(d) {return z(d.natl2010)});
 
     g.select(".dot.y1").style("opacity", 0);
-            //  .transition()
-          //  .duration(2000)
-          //  .attr("r", radius)
-          //  .attr("cy", function(d) {return y(d.livelihood_zone)})
-        // .transition()
-        //   .delay(2500)
-        //   .duration(2000)
-          // .attr("cx", function(d) {return x(d.avg2010)})
-          // .style("fill", function(d) {return z(d.avg2010)})
+
 
 // Dot mask to underlie 2010 data when opacity is changed.
         // var dotMask2010 = g.selectAll("dot")
@@ -238,7 +231,7 @@ var scrollVis = function() {
     // time the active section changes
     activateFunctions[0] = showInit;
     activateFunctions[1] = showNatl2010;
-    activateFunctions[2] = show2;
+    activateFunctions[2] = showLZ2010;
     activateFunctions[3] = show3;
     activateFunctions[4] = show4;
     activateFunctions[5] = show5;
@@ -312,44 +305,52 @@ var scrollVis = function() {
       .duration(0)
       .style("opacity", 0);
 
-    // subsequent
-    g.selectAll(".square")
-      .transition()
-      .duration(0)
-      .style("opacity", 0);
 
+    // current: make nat'l avg. appear.
     g.selectAll(".dot.y1")
       .transition()
       .duration(600)
-      .style("opacity", 1.0);
+      .style("opacity", 1.0)
+      // recode the cx, cy, r, fill to reverse transition if needed.
+      .attr("cx", function(d) {return x(d.natl2010)})
+      .attr("cy", height/2)
+      .attr("r", Math.sqrt(Math.pow(radius, 2)*13)) // Calc equal area.
+      .style("fill", function(d) {return z(d.natl2010)});
   }
 
 
   /**
-   * show2 - filler counts
+   * showLZ2010 - filler counts
    *
    * hides: intro title
    * hides: square grid
    * shows: filler count title
    *
    */
-  function show2() {
+  function showLZ2010() {
     // previous
     g.selectAll(".rwanda-title")
       .transition()
       .duration(0)
       .attr("opacity", 0);
 
-    // subsequent
-    g.selectAll(".square")
+    // current: divide into LZ.
+    g.selectAll(".dot.y1")
       .transition()
-      .duration(0)
-      .attr("opacity", 0);
+        .duration(600)
+        .attr("r", radius)
+        .attr("cy", function(d) {return y(d.livelihood_zone)})
+  // .transition()
+    // .delay(2500)
+    // .duration(2000)
+        .attr("cx", function(d) {return x(d.avg2010)})
+        .style("fill", function(d) {return z(d.avg2010)});
 
-    g.selectAll(".count-title")
-      .transition()
-      .duration(600)
-      .attr("opacity", 1.0);
+        // subsequent
+        g.selectAll(".square")
+          .transition()
+          .duration(0)
+          .attr("opacity", 0);
   }
 
   /**
