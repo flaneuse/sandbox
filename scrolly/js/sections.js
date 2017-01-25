@@ -244,6 +244,15 @@ var scrollVis = function() {
          .text(function(d) {return "national average: " + d3.format(".0%")(d.natl2010)})
          .style("opacity", 0);
 
+// FRAME 3: map
+           svg.append("image")
+             .attr("class", "rw-map")
+             .attr("xlink:href", function(d) {return "/img/dhs2010_choro_lab.png"})
+             .attr("width", "100%")
+             .attr("height", "100%")
+             .style("opacity", 0);
+
+
 // FRAME 1: Initial national average, 2010.
     var dotGroup2010 = g.selectAll("dot")
          .data(data)
@@ -281,13 +290,7 @@ var scrollVis = function() {
             .text(function(d) {return d3.format(".0%")(d.avg2010)})
             .style("opacity", 0)
 
-// FRAME 3: map
-  svg.append("image")
-    .attr("class", "rw-map")
-    .attr("xlink:href", function(d) {return "/img/test_map.png"})
-    .attr("width", "100%")
-    .attr("height", "100%")
-    .style("opacity", 0);
+
 
 // Dot mask to underlie 2010 data when opacity is changed.
         // var dotMask2010 = g.selectAll("dot")
