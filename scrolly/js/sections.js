@@ -232,6 +232,17 @@ var scrollVis = function() {
        .attr("x2", function(d) {return x(d.natl2010)})
        .style("opacity", 0);
 
+    svg.selectAll("g").selectAll(".natl2010")
+           .data(natlData)
+         .enter().append("line")
+           .attr("class", "natl2010")
+           .attr("y1", 0)
+           .attr("y2", height + margin.top + margin.bottom)
+           .attr("x1", function(d) {return x(d.natl2010)})
+           .attr("x2", function(d) {return x(d.natl2010)})
+           .style("stroke-dasharray", ("5, 10"))
+           .style("opacity", 0);
+
    // national annotation
    svg.selectAll("g").selectAll(".natl-annot")
          .data(natlData)
@@ -243,6 +254,20 @@ var scrollVis = function() {
          .attr("dx", -10)
          .text(function(d) {return "national average: " + d3.format(".0%")(d.natl2010)})
          .style("opacity", 0);
+
+// national annotation 2010
+         svg.selectAll("g").selectAll(".natl-annot2010")
+               .data(natlData)
+             .enter().append("text")
+               .attr("class", "natl-annot2010")
+               .attr("x", function(d) {return x(d.natl2010)})
+               .attr("y", 40) // NOTE: hard coding for now.
+               // .attr("y", y.bandwidth())
+               .attr("dx", -10)
+               .text(function(d) {return "2010: " + d3.format(".0%")(d.natl2010)})
+               .style("opacity", 0)
+               .style("font-size", "32pt")
+               .style("text-anchor", "start");
 
 // FRAME 3: map
            svg.append("image")
@@ -462,7 +487,7 @@ var scrollVis = function() {
         .attr("cy", function(d) {return y(d.livelihood_zone)})
         .attr("transform","translate(0,0)")
   .transition()
-    .delay(1000)
+    .delay(600)
     .duration(1500)
         .attr("cx", function(d) {return x(d.avg2010)})
         .style("fill", function(d) {return z(d.avg2010)});
@@ -507,7 +532,7 @@ var scrollVis = function() {
         .duration(600)
         .attr("cx", function(d) {return d.imgX;})
         .attr("cy", function(d) {return d.imgY;})
-        .style("fill", function(d) {return z(d.avg2010)});
+        .style("fill", function(d) {return z(d.avg2010)})
         .attr("transform","translate(-105,-40)")
         .transition()
         // .delay(600)
@@ -544,9 +569,25 @@ var scrollVis = function() {
 g.selectAll(".x.label")
   .text("percent of stunted children under 5")
 
+
+
+
 showX();
 showY();
 showLZ();
+
+// Show the average lines
+g.selectAll(".natl2010")
+  .transition()
+  .duration(600)
+  .style("opacity", 1);
+
+  // change avg. label
+  g.selectAll(".natl-annot2010")
+  .transition()
+  .duration(600)
+    .style("opacity", 1);
+
 showAvg();
 
 // reappear dots
@@ -558,12 +599,28 @@ g.selectAll(".dot.y1")
     .delay(1000)
     .attr("cy", function(d) {return y(d.livelihood_zone)})
     .attr("transform","translate(0,0)")
-    .style("fill", function(d) {return z(d.avg2010)});
+    .style("fill", function(d) {return z(d.avg2010)})
     .attr("cx", function(d) {return x(d.avg2010)});
 
 // add 2010/2014 annotation
 
 // change avg. line
+svg.selectAll("g").selectAll(".natl")
+  .style("opacity", 1)
+  .attr("x1", function(d) {return x(d.natl2010);})
+  .attr("x2", function(d) {return x(d.natl2010);})
+    .transition()
+    .delay(1000)
+  .duration(1500)
+  .attr("x1", function(d) {return x(d.natl2014);})
+  .attr("x2", function(d) {return x(d.natl2014);})
+  .selectAll("natl-annot")
+
+  // change avg. label
+  g.selectAll(".natl-annot")
+    .attr("x", function(d) {return x(d.natl2014);})
+    .text(function(d) {return "2014: " + d3.format(".0%")(d.natl2014)})
+    .style("font-size", "32px");
 
 // subsequent
     g.selectAll(".count-title")

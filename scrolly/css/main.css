@@ -26,6 +26,11 @@ body{
   stroke-width: 1;
 }
 
+.natl2010 {
+  stroke: #666;
+  stroke-width: 1;
+}
+
 .change {
   stroke: #333;
   stroke-width: 0.5;
