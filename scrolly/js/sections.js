@@ -285,24 +285,9 @@ var scrollVis = function() {
   svg.append("image")
     .attr("class", "map")
     .attr("xlink:href", function(d) {return "/img/test_map.png"})
-    .style("opacity", 0)
-    .on("load", function(d) {
-      var myImage = new Image(); // used to center image
-      myImage.onload = function() {
-        d3.select(".map")
-            .attr("width", "100%")
-            .attr("height", "100%")
-            .attr("x", (width + margin.left + margin.right - this.width)/2)
-            .attr("y", (height + margin.top + margin.bottom - this.height)/2)
-            .style("opacity", 0);
-    }
-      myImage.src = "/img/test_map.png";
-});
-      // .attr("x", 0)
-      // .attr("y", 0)
-      // .attr("height", height)
-      // .attr("width", width)
-      //  .style("opacity", 1);
+    .attr("width", "100%")
+    .attr("height", "100%")
+    .style("opacity", 0);
 
 // Dot mask to underlie 2010 data when opacity is changed.
         // var dotMask2010 = g.selectAll("dot")
