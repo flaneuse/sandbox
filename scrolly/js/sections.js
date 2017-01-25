@@ -168,13 +168,13 @@ var scrollVis = function() {
          .call(xAxis)
          .attr("class", "x axis")
          .attr("transform", "translate(0," + height + ")")
-    g.select(".x.axis").style("opacity", 1); // ! Change to 0
+         .style("opacity", 0); // ! Change to 0
 
     // y-axis
     g.append("g")
          .call(yAxis)
          .attr("class", "y axis")
-    g.select(".y.axis").style("opacity", 1);
+         .style("opacity", 0);
 
 // FRAME 1: Initial national average, 2010.
     var dotGroup2010 = g.selectAll("dot")
@@ -282,6 +282,11 @@ var scrollVis = function() {
       .duration(0)
       .style("opacity", 0);
 
+    g.selectAll(".axis.x")
+        .transition()
+        .duration(600)
+        .style("opacity", 0)
+
     // show current
     g.selectAll(".rwanda-title")
       .transition()
@@ -306,6 +311,11 @@ var scrollVis = function() {
 
 
     // current: make nat'l avg. appear.
+    g.selectAll(".axis.x")
+      .transition()
+      .duration(600)
+      .style("opacity", 1.0)
+
     g.selectAll(".dot.y1")
       .transition()
       .duration(600)
@@ -315,6 +325,12 @@ var scrollVis = function() {
       .attr("cy", height/2)
       .attr("r", Math.sqrt(Math.pow(radius, 2)*13)) // Calc equal area.
       .style("fill", function(d) {return z(d.natl2010)});
+
+    // hide subsequent: remove y axis
+    g.selectAll(".axis.y")
+      .transition()
+      .duration(600)
+      .style("opacity", 0)
   }
 
 
@@ -334,6 +350,12 @@ var scrollVis = function() {
       .attr("opacity", 0);
 
     // current: divide into LZ.
+
+    g.selectAll(".axis.y")
+      .transition()
+      .duration(600)
+      .style("opacity", 1.0)
+
     g.selectAll(".dot.y1")
       .transition()
         .duration(600)
