@@ -11,7 +11,7 @@ var scrollVis = function() {
   // var width = 600;
   // var height = 520;
   // var margin = {top:0, left:20, bottom:40, right:10};
-  var margin = {top: 30, right: 75, bottom: 0, left: 250},
+  var margin = {top: 40, right: 75, bottom: 0, left: 250},
     width = 900 - margin.left - margin.right,
     height = 550 - margin.top - margin.bottom;
 
@@ -163,6 +163,8 @@ var scrollVis = function() {
    * NOTE: don't be tempted to group the elements together. Makes selection for transitions more complicated than needs to be.
    */
   setupVis = function(data) {
+    // Common chart elements
+
     // x-axis
     g.append("g")
          .call(xAxis)
@@ -176,6 +178,31 @@ var scrollVis = function() {
          .attr("class", "y axis")
          .style("opacity", 0);
 
+    // x-axis title
+    g.append("text")
+          .attr("class", "x label")
+          .attr("x", 0)
+          .attr("y", -20)
+          .text("percent of stunted children under 5")
+          .style("opacity", 0);
+
+
+         // FRAME 0: initial settings
+         g.append("text")
+           .attr("class", "title rwanda-title")
+           .attr("x", width / 2)
+           .attr("y", height / 3)
+           .text("title");
+
+         g.append("text")
+           .attr("class", "sub-title rwanda-title")
+           .attr("x", width / 2)
+           .attr("y", (height / 3) + (height / 5) )
+           .text("tbd");
+
+         g.selectAll(".rwanda-title")
+           .attr("opacity", 0);
+
 // FRAME 1: Initial national average, 2010.
     var dotGroup2010 = g.selectAll("dot")
          .data(data)
@@ -186,6 +213,17 @@ var scrollVis = function() {
          .attr("r", Math.sqrt(Math.pow(radius, 2)*13)) // Calc equal area.
          .style("fill", function(d) {return z(d.natl2010)})
          .style("opacity", 0);
+
+    var natlLabel = g.selectAll("text")
+      .data(data)
+    .enter().append("text")
+      .attr("class", "value-label")
+      .attr("id", "natl")
+      .attr("x", function(d) {return x(d.natl2010)})
+      .attr("y", height/2)
+      .text("text")
+      .style("opacity", 1);
+
 
 
 // Dot mask to underlie 2010 data when opacity is changed.
@@ -200,21 +238,6 @@ var scrollVis = function() {
         //      .style("stroke", "white")
         //      .style("fill-opacity", 1)
 
-    // FRAME 0: initial settings
-    g.append("text")
-      .attr("class", "title rwanda-title")
-      .attr("x", width / 2)
-      .attr("y", height / 3)
-      .text("title");
-
-    g.append("text")
-      .attr("class", "sub-title rwanda-title")
-      .attr("x", width / 2)
-      .attr("y", (height / 3) + (height / 5) )
-      .text("tbd");
-
-    g.selectAll(".rwanda-title")
-      .attr("opacity", 0);
 
   };
 
@@ -287,6 +310,11 @@ var scrollVis = function() {
         .duration(600)
         .style("opacity", 0)
 
+    g.selectAll(".x.label")
+            .transition()
+            .duration(600)
+            .style("opacity", 0)
+
     // show current
     g.selectAll(".rwanda-title")
       .transition()
@@ -315,6 +343,11 @@ var scrollVis = function() {
       .transition()
       .duration(600)
       .style("opacity", 1.0)
+
+    g.selectAll(".x.label")
+              .transition()
+              .duration(600)
+              .style("opacity", 1)    
 
     g.selectAll(".dot.y1")
       .transition()

@@ -56,6 +56,22 @@ body{
   shape-rendering: crispEdges;
 }
 
+.x.label {
+  fill: #999;
+  font-size: 18px;
+  font-family: "Oxygen", sans-serif;
+  font-weight: 300;
+
+}
+
 .y.axis line {
   display:none;
+}
+
+.value-label .natl {
+  font-size: 16px;
+  font-family: "Oxygen", sans-serif;
+  font-weight: bold;
+  fill: #fff;
+  text-anchor: middle;
 }
