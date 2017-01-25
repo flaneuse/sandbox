@@ -174,10 +174,11 @@ var scrollVis = function() {
          .attr("class", "y axis")
     g.select(".y.axis").style("opacity", 1);
 
-
+// Initial national average, 2010.
     var dotGroup2010 = g.selectAll("dot")
          .data(data)
       .enter().append("circle")
+         .attr("class", "dot")
          .attr("cx", function(d) {return x(d.natl2010)})
          .attr("cy", height/2)
          .attr("r", Math.sqrt(Math.pow(radius, 2)*13)) // Calc equal area.
@@ -187,11 +188,22 @@ var scrollVis = function() {
          .duration(2000)
          .attr("r", radius)
          .attr("cy", function(d) {return y(d.livelihood_zone)})
-      .transition()
-        .delay(2500)
-        .duration(2000)
+      // .transition()
+      //   .delay(2500)
+      //   .duration(2000)
         .attr("cx", function(d) {return x(d.avg2010)})
         .style("fill", function(d) {return z(d.avg2010)})
+
+        var dotMask2010 = g.selectAll("dot")
+             .data(data)
+          .enter().append("circle")
+             .attr("class", "dot")
+             .attr("cx", function(d) {return x(d.avg2010)})
+             .attr("cy", function(d) {return y(d.livelihood_zone)})
+             .attr("r", radius) // Calc equal area.
+             .style("fill", "white")
+             .style("stroke", "white")
+             .style("fill-opacity", 1)
 
     // count openvis title
     g.append("text")
