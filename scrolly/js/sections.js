@@ -540,19 +540,41 @@ var scrollVis = function() {
         .style("opacity", 0.3);
 
 // subsequent
-    myG.selectAll(".count-title")
-      .transition()
-      .duration(600)
-      .style("opacity", 1.0);
+
+
+// remove duplicate avg line
+myG.selectAll(".natl2010")
+  .transition()
+  .duration(0)
+  .style("opacity", 0);
+
+  // change avg. label
+  myG.selectAll(".natl-annot2010")
+  .transition()
+  .duration(0)
+    .style("opacity", 0);
+
+  hideAvg();
+
+  // reanimate dots
+
+  // change avg. line
+  myG.selectAll(".natl")
+    .style("opacity", 0)
+    .attr("x1", function(d) {return x(d.natl2010);})
+    .attr("x2", function(d) {return x(d.natl2010);});
+
+    // change avg. label
+    myG.selectAll(".natl-annot")
+      .text(function(d) {return "national average: " + d3.format(".0%")(d.natl2010)})
+        .style("font-size", "16px")
+        .style("fill", "#555")
+        .attr("x", function(d) {return x(d.natl2010);});
   }
 
 
   /**
-   * showNatl2010 - filler counts
-   *
-   * hides: intro title
-   * hides: square grid
-   * shows: filler count title
+   * showChange-- animate natl change 2010-->2014
    *
    */
   function showChange() {
@@ -567,8 +589,6 @@ var scrollVis = function() {
 // change title
 myG.selectAll(".x.label")
   .text("percent of stunted children under 5")
-
-
 
 
 showX();
@@ -707,6 +727,11 @@ function hideY() {
 
   function hideAvg() {
     myG.selectAll(".natl")
+    .transition()
+    .duration(0)
+    .style("opacity", 0)
+
+    myG.selectAll(".natl-annot")
     .transition()
     .duration(0)
     .style("opacity", 0)
