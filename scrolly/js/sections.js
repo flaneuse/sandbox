@@ -526,9 +526,9 @@ var scrollVis = function() {
 
     // current: divide into LZ.
     showX();
-    showY();
+    showY(1000, 1000);
 
-    showLZ();
+    showLZ(1000, 1000);
 
     showAvg();
 
@@ -690,8 +690,8 @@ plotG.selectAll(".x.label")
 
 
 showX();
-showY();
-showLZ();
+showY(600, 0);
+showLZ(600, 0);
 
 // Show the average lines
 plotG.selectAll(".natl2010")
@@ -849,10 +849,11 @@ function hideX() {
 }
 
 // -- Y-AXIS --
-function showY(){
+function showY(tDuration, tDelay){
   plotG.selectAll(".y.axis")
     .transition()
-    .duration(600)
+    .duration(tDuration)
+    .delay(tDelay)
     .style("opacity", 1.0);
 }
 
@@ -864,10 +865,11 @@ function hideY() {
 }
 
 // -- LIVELIHOOD ZONE MAPS --
-   function showLZ() {
+   function showLZ(tDuration, tDelay) {
      plotG.selectAll(".lz-icons")
          .transition()
-         .duration(600)
+         .duration(tDuration)
+         .delay(tDelay)
          .style("opacity", 1);
    }
 
