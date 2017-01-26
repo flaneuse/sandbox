@@ -11,6 +11,23 @@ body{
   color: #333;
 }
 
+.pdf {
+  font-family: "Oxygen", sans-serif;
+  font-size: 14px;
+  font-weight: 300;
+  color: #008080;
+  margin-top: -20px;
+  text-align: right;
+
+}
+
+/* Add >> for links within "motivation section"*/
+.pdf a::before {
+  content: "\f101  ";
+  font-family: 'FontAwesome';
+}
+
+
 .highlight {
   color: #008080;
 }
