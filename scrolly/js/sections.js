@@ -240,7 +240,7 @@ var scrollVis = function() {
          plotG.selectAll(".rwanda-title")
            .style("opacity", 0);
 
-// FRAME 2: Natl. avg line
+// LINE: Natl. avg line
    plotG.selectAll(".natl")
        .data(natlData)
      .enter().append("line")
@@ -262,7 +262,7 @@ var scrollVis = function() {
            .style("stroke-dasharray", ("5, 10"))
            .style("opacity", 0);
 
-   // national annotation
+   // TEXT: national annotation
    plotG.selectAll(".natl-annot")
          .data(natlData)
        .enter().append("text")
@@ -274,20 +274,20 @@ var scrollVis = function() {
          .text(function(d) {return "national average: " + d3.format(".0%")(d.natl2010)})
          .style("opacity", 0);
 
-// national annotation 2010
+// TEXT: national annotation 2010
          plotG.selectAll(".natl-annot2010")
                .data(natlData)
              .enter().append("text")
                .attr("class", "natl-annot2010")
                .attr("x", function(d) {return x(d.natl2010)})
-               .attr("y", 40) // NOTE: hard coding for now.
+               .attr("y", 480) // NOTE: hard coding for now.
                // .attr("y", y.bandwidth())
                .attr("dx", 10)
                .text(function(d) {return "2010: " + d3.format(".0%")(d.natl2010)})
                .style("opacity", 0)
                .style("fill", function(d) {return z(d.natl2010)});
 
-// FRAME 3: map
+// MAP: map
            imgG.append("image")
              .attr("class", "rw-map")
              .attr("xlink:href", function(d) {return "/img/dhs2010_choro_lab.png"})
@@ -296,16 +296,44 @@ var scrollVis = function() {
              .style("opacity", 0);
 
 
-// FRAME 1: Initial national average, 2010.
-    var dotGroup2010 = plotG.selectAll("dot")
-         .data(data)
-      .enter().append("circle")
-          .attr("class", "dot y1")
-         .attr("cx", function(d) {return x(d.natl2010)})
-         .attr("cy", height/2)
-         .attr("r", Math.sqrt(Math.pow(radius, 2)*13)) // Calc equal area.
-         .style("fill", function(d) {return z(d.natl2010)})
-         .style("opacity", 0);
+
+
+         // DOTS: Dot mask to underlie 2010 data when opacity is changed.
+                 var dotMask2010 = plotG.selectAll(".dotMask")
+                      .data(data)
+                   .enter().append("circle")
+                      .attr("class", "dotMask")
+                      .attr("cx", function(d) {return x(d.avg2010)})
+                      .attr("cy", function(d) {return y(d.livelihood_zone)})
+                      // .attr("cy", function(d) {return y(d.livelihood_zone)+y.bandwidth()/2})
+                      .attr("r", radius) // Calc equal area.
+                      .style("fill", "white")
+                      .style("stroke", "white")
+                      .style("opacity", 0);
+
+// DOTS: 2010 data
+          var dotGroup2010 = plotG.selectAll(".dot.y2")
+                        .data(data)
+                      .enter().append("circle")
+                        .attr("class", "dot y2")
+                        .attr("cx", function(d) {return x(d.avg2010)})
+                        .attr("cy", function(d) {return y(d.livelihood_zone)})
+                        // .attr("cy", function(d) {return y(d.livelihood_zone)+y.bandwidth()/2})
+                        .attr("r", radius)
+                        .style("fill", function(d) {return z(d.avg2010)})
+                        .style("stroke-opacity", 0)
+                        .style("fill-opacity", 0);
+
+          // DOTS: Initial national average, 2010.  To be changed to 2014.
+              var dotGroup = plotG.selectAll("dot")
+                   .data(data)
+                .enter().append("circle")
+                    .attr("class", "dot y1")
+                   .attr("cx", function(d) {return x(d.natl2010)})
+                   .attr("cy", height/2)
+                   .attr("r", Math.sqrt(Math.pow(radius, 2)*13)) // Calc equal area.
+                   .style("fill", function(d) {return z(d.natl2010)})
+                   .style("opacity", 0);
 
   // value label for nat'l avg.
     var natlLabel = plotG.selectAll(".natl-value")
@@ -335,18 +363,6 @@ var scrollVis = function() {
 
 
 
-// Dot mask to underlie 2010 data when opacity is changed.
-        // var dotMask2010 = g.selectAll("dot")
-        //      .data(data)
-        //   .enter().append("circle")
-        //      .attr("class", "dot")
-        //      .attr("cx", function(d) {return x(d.avg2010)})
-        //      .attr("cy", function(d) {return y(d.livelihood_zone)})
-        //      .attr("r", radius) // Calc equal area.
-        //      .style("fill", "white")
-        //      .style("stroke", "white")
-        //      .style("fill-opacity", 1)
-
 
   };
 
@@ -365,7 +381,7 @@ var scrollVis = function() {
     activateFunctions[2] = showLZ2010;
     activateFunctions[3] = showMap;
     activateFunctions[4] = showChange;
-
+    activateFunctions[5] = showChange2;
 
     // updateFunctions are called while
     // in a particular section to update
@@ -373,7 +389,7 @@ var scrollVis = function() {
     // Most sections do not need to be updated
     // for all scrolling and so are set to
     // no-op functions.
-    for(var i = 0; i < 5; i++) {
+    for(var i = 0; i < 6; i++) {
       updateFunctions[i] = function() {};
     }
     // If using any updateFunctions, call it here.
@@ -624,7 +640,9 @@ plotG.selectAll(".natl2010")
   plotG.selectAll(".natl-annot2010")
   .transition()
   .duration(600)
-    .style("opacity", 1);
+    .style("opacity", 1)
+    .style("font-size", "28px")
+    .style("fill", function(d) {return z(d.natl2010)});
 
 showAvg();
 
@@ -664,13 +682,67 @@ plotG.selectAll(".natl")
       .attr("x", function(d) {return x(d.natl2014);});
 
 // subsequent
-    plotG.selectAll(".count-title")
-      .transition()
-      .duration(600)
-      .style("opacity", 1.0);
+// previous
+// remove dot mask
+plotG.selectAll(".dotMask")
+  .transition()
+  .duration(0)
+  .style("opacity", 0);
+
+// remove 2010 data
+plotG.selectAll(".dot.y2")
+  .transition()
+  .duration(0)
+  .style("opacity", 0);
+
+// change 2014 data back to 2010
+plotG.selectAll(".dot.y2")
+  .transition()
+  .duration(0)
+  .style("fill", function(d) {return z(d.natl2010)})
+  .attr("x", function(d) {return x(d.natl2010);});
+
+
   }
 
+  /**
+   * showChange2-- animate natl change 2010-->2014
+   * Part 2: animate LZ changes.
+   *
+   */
+  function showChange2() {
+    // -- current --
+    // add in the dots to protect the opacity changes
+    plotG.selectAll(".dotMask")
+      .style("opacity", 1);
 
+    // add in the dummy dots
+    plotG.selectAll(".dot.y2")
+      .style("fill-opacity", 1)
+      .style("stroke-opacity", 1)
+      .transition()
+        .duration(5000)
+        .style("fill-opacity", 0.2);
+
+
+    // change the normal dots to 2014 data.
+    plotG.selectAll(".dot.y1")
+    .transition()
+      // .delay(function(d,i) {return i*100;})
+      .duration(4000)
+      .attr("cx", function(d) {return x(d.avg2014)})
+      .style("fill", function(d) {return z(d.avg2014)});
+
+    // Change the avg. labels to not be so prominent.
+    // change avg. label
+    plotG.selectAll(".natl-annot")
+        .style("font-size", "16px")
+        .style("fill", "#555");
+
+    plotG.selectAll(".natl-annot2010")
+            .style("font-size", "16px")
+            .style("fill", "#555");
+  }
 
 
   /**
@@ -762,6 +834,10 @@ function hideY() {
     .duration(0)
     .style("opacity", 0)
 };
+
+
+
+
 
   /**
   * TRANSITION VARIABLES
