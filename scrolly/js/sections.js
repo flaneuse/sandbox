@@ -240,7 +240,7 @@ var scrollVis = function() {
          plotG.selectAll(".rwanda-title")
            .style("opacity", 0);
 
-// LINE: Natl. avg line
+// LINE: Natl. avg line (2010/2014)
    plotG.selectAll(".natl")
        .data(natlData)
      .enter().append("line")
@@ -251,6 +251,7 @@ var scrollVis = function() {
        .attr("x2", function(d) {return x(d.natl2010)})
        .style("opacity", 0);
 
+// LINE: natl. avg. 2010
     plotG.selectAll(".natl2010")
            .data(natlData)
          .enter().append("line")
@@ -261,6 +262,19 @@ var scrollVis = function() {
            .attr("x2", function(d) {return x(d.natl2010)})
            .style("stroke-dasharray", ("5, 10"))
            .style("opacity", 0);
+
+  // LINE: Change 2010 --> 2014
+     var lineChange = plotG.selectAll("change")
+           .data(data)
+       .enter().append("line")
+           .attr("class", "change")
+           .attr("y1", function(d) {return y(d.livelihood_zone)})
+           .attr("y2", function(d) {return y(d.livelihood_zone)})
+          //  .attr("y1", function(d) {return y(d.livelihood_zone) + y.bandwidth()/2})
+          //  .attr("y2", function(d) {return y(d.livelihood_zone) + y.bandwidth()/2})
+           .attr("x1", function(d) {return x(d.avg2010)})
+           .attr("x2", function(d) {return x(d.avg2014)})
+           .style("opacity", 0)
 
    // TEXT: national annotation
    plotG.selectAll(".natl-annot")
@@ -702,6 +716,12 @@ plotG.selectAll(".dot.y2")
   .style("fill", function(d) {return z(d.natl2010)})
   .attr("x", function(d) {return x(d.natl2010);});
 
+  // remove change line
+  plotG.selectAll("change")
+    .transition()
+    .duration(0)
+    .style("opacity", 0);
+
 
   }
 
@@ -742,6 +762,12 @@ plotG.selectAll(".dot.y2")
     plotG.selectAll(".natl-annot2010")
             .style("font-size", "16px")
             .style("fill", "#555");
+
+// add 2010/2014 change data
+      plotG.selectAll(".change")
+              .transition()
+              .duration(1000)
+              .style("opacity", 1);
   }
 
 
