@@ -4,6 +4,13 @@ body{
   color: #333;
 }
 
+.paragraph {
+  margin-bottom: 20px;
+  font-family: "Oxygen", sans-serif;
+  font-weight: 300;
+  color: #333;
+}
+
 .top-label {
   float: left;
   margin-left: 250px;
