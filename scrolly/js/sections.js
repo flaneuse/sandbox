@@ -41,7 +41,8 @@ var scrollVis = function() {
   // radius of dots in pixels.
        var radius = 10;
 
-
+  // color palette
+  var colorPalette = colorbrewer.Spectral[11];
 
 
   // -- SCALES --
@@ -55,9 +56,10 @@ var scrollVis = function() {
        .rangeBands([0, height], 0.2, 0);
 
   var z = d3.scale.linear()
-  .range(["red", "steelblue"])
-    .interpolate(d3.interpolateLab)
-       .domain([1, 0.2]);
+  // .range(colorPalette)
+    .range(colorbrewer.Spectral[11])
+    .interpolate(d3.interpolateHcl)
+       .domain([0.57, .48]);
 
   var xAxis = d3.svg.axis()
        .scale(x)
@@ -554,7 +556,7 @@ var scrollVis = function() {
         // .delay(600)
         .delay(function(d, i) {return i*100 + 600;})
         .duration(2000)
-        .style("opacity", 0.3);
+        .style("opacity", 0);
 
 // subsequent
 
