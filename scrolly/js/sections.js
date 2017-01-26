@@ -516,7 +516,7 @@ var scrollVis = function() {
 
     plotG.selectAll(".dot.y1")
       .transition()
-        .duration(600)
+        .duration(350)
         .attr("r", radius)
         .attr("cy", function(d) {return y(d.livelihood_zone)})
         .attr("transform","translate(0,0)")
@@ -571,7 +571,7 @@ var scrollVis = function() {
         .transition()
         // .delay(600)
         .delay(function(d, i) {return i*100 + 600;})
-        .duration(2000)
+        .duration(1000)
         .style("opacity", 0);
 
 // subsequent
