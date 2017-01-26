@@ -330,10 +330,10 @@ var scrollVis = function() {
                       .style("opacity", 0);
 
 // DOTS: 2010 data
-          var dotGroup2010 = plotG.selectAll(".dot.y2")
+          var dotGroup2010 = plotG.selectAll(".dot.dot2010")
                         .data(data)
                       .enter().append("circle")
-                        .attr("class", "dot y2")
+                        .attr("class", "dot dot2010")
                         .attr("cx", function(d) {return x(d.avg2010)})
                         .attr("cy", function(d) {return y(d.livelihood_zone)})
                         // .attr("cy", function(d) {return y(d.livelihood_zone)+y.bandwidth()/2})
@@ -343,10 +343,10 @@ var scrollVis = function() {
                         .style("fill-opacity", 0);
 
           // DOTS: Initial national average, 2010.  To be changed to 2014.
-              var dotGroup = plotG.selectAll("dot")
+              var dotGroup = plotG.selectAll("dot dotMain")
                    .data(data)
                 .enter().append("circle")
-                    .attr("class", "dot y1")
+                    .attr("class", "dot dotMain")
                    .attr("cx", function(d) {return x(d.natl2010)})
                    .attr("cy", height/2)
                    .attr("r", Math.sqrt(Math.pow(radius, 2)*13)) // Calc equal area.
@@ -441,7 +441,7 @@ var scrollVis = function() {
     // previous (null)
 
     // subsequent: hide natl avg. graph
-    plotG.selectAll(".dot.y1")
+    plotG.selectAll(".dot.dotMain")
       .transition()
       .duration(0)
       .style("opacity", 0);
@@ -482,7 +482,7 @@ var scrollVis = function() {
     // current: make nat'l avg. appear.
     showX();
 
-    plotG.selectAll(".dot.y1")
+    plotG.selectAll(".dot.dotMain")
       .transition()
       .duration(600)
       .style("opacity", 1.0)
@@ -532,7 +532,7 @@ var scrollVis = function() {
 
     showAvg();
 
-    plotG.selectAll(".dot.y1")
+    plotG.selectAll(".dot.dotMain")
       .transition()
         .duration(350)
         .attr("r", radius)
@@ -624,7 +624,7 @@ var scrollVis = function() {
       .duration(600)
       .style("opacity", 1);
 
-    plotG.selectAll(".dot.y1")
+    plotG.selectAll(".dot.dotMain")
         .transition()
         .duration(600)
         .attr("cx", function(d) {return d.imgX;})
@@ -710,7 +710,7 @@ plotG.selectAll(".natl2010")
 showAvg();
 
 // reappear dots
-plotG.selectAll(".dot.y1")
+plotG.selectAll(".dot.dotMain")
     .transition()
     .duration(600)
     .style("opacity", 1)
@@ -744,7 +744,7 @@ plotG.selectAll(".natl")
       .style("fill", function(d) {return z(d.natl2014)})
       .attr("x", function(d) {return x(d.natl2014);});
 
-// subsequent
+// -- subsequent --
 // previous
 // remove dot mask
 plotG.selectAll(".dotMask")
@@ -753,20 +753,14 @@ plotG.selectAll(".dotMask")
   .style("opacity", 0);
 
 // remove 2010 data
-plotG.selectAll(".dot.y2")
+plotG.selectAll(".dot.dot2010")
   .transition()
   .duration(0)
-  .style("opacity", 0);
-
-// change 2014 data back to 2010
-plotG.selectAll(".dot.y2")
-  .transition()
-  .duration(0)
-  .style("fill", function(d) {return z(d.natl2010)})
-  .attr("x", function(d) {return x(d.natl2010);});
+  .style("fill-opacity", 0)
+  .style("stroke-opacity", 0);
 
   // remove change line
-  plotG.selectAll("change")
+  plotG.selectAll(".change")
     .transition()
     .duration(0)
     .style("opacity", 0);
@@ -786,7 +780,7 @@ plotG.selectAll(".dot.y2")
       .style("opacity", 1);
 
     // add in the dummy dots
-    plotG.selectAll(".dot.y2")
+    plotG.selectAll(".dot.dot2010")
       .style("fill-opacity", 1)
       .style("stroke-opacity", 1)
       .transition()
@@ -795,7 +789,7 @@ plotG.selectAll(".dot.y2")
 
 
     // change the normal dots to 2014 data.
-    plotG.selectAll(".dot.y1")
+    plotG.selectAll(".dot.dotMain")
     .transition()
       // .delay(function(d,i) {return i*100;})
       .duration(4000)
