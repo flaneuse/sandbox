@@ -150,6 +150,10 @@ var scrollVis = function() {
       plotG = svg.select("#plots")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+// -- MOUSEOVERS --
+  beansWheat = d3.select("body").select("#beans-wheat")
+
+
 
 // update all domains based on data.
 // set the domain (data range) of data
@@ -545,6 +549,50 @@ var scrollVis = function() {
         .delay(2500)
         .duration(600)
         .style("opacity", 1.0)
+
+    beansWheat.on("mouseover", function(d){
+
+      plotG.selectAll('circle')
+      .transition()
+      .duration(500)
+          .style("opacity", 0.5)
+        .filter(function(d) {return d.livelihood_zone == 'Northern Highland Beans and Wheat'})
+           .attr("r", radius*1.25)
+           .style("opacity", 1);
+
+
+           plotG.selectAll("g.y.axis")
+           .transition()
+           .duration(500)
+               .style("opacity", 0.5)
+             .filter(function(d, i) {return d.livelihood_zone == 'Northern Highland Beans and Wheat'})
+                .style("opacity", 1);
+
+          plotG.selectAll('.lz-icons')
+                .transition()
+                .duration(500)
+                    .style("opacity", 0.5)
+                  .filter(function(d) {return d.livelihood_zone == 'Northern Highland Beans and Wheat'})
+                     .style("opacity", 1);
+    })
+
+    beansWheat.on("mouseout", function(d){
+      plotG.selectAll('circle')
+           .transition()
+           .duration(500)
+           .style("opacity", 1)
+           .attr("r", radius);
+
+      plotG.selectAll('.y.axis')
+           .transition()
+           .duration(500)
+                .style("opacity", 1);
+
+          plotG.selectAll('.lz-icons')
+                .transition()
+                .duration(500)
+                     .style("opacity", 1);
+    })
 
         // subsequent
         imgG.selectAll(".rw-map")
