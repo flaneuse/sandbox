@@ -11,7 +11,7 @@ var scrollVis = function() {
   // var width = 600;
   // var height = 520;
   // var margin = {top:0, left:20, bottom:40, right:10};
-  var margin = {top: 40, right: 75, bottom: 0, left: 250},
+  var margin = {top: 40, right: 75, bottom: 15, left: 250},
     width = 900 - margin.left - margin.right,
     height = 550 - margin.top - margin.bottom;
 
@@ -34,7 +34,9 @@ var scrollVis = function() {
   var imgG = null;
   var plotG = null;
 
-
+// -- INTERACTION COUNTERS --
+  var ciClick = 0;
+  var allowCI = false;
 
   // -- DEFINE CONSTANTS --
 
@@ -150,8 +152,8 @@ var scrollVis = function() {
       plotG = svg.select("#plots")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-// -- MOUSEOVERS --
-  beansWheat = d3.select("body").select("#beans-wheat")
+// -- INTERACTION SELECTORS --
+  beansWheat = d3.select("body").select("#beans-wheat");
 
 
 
@@ -250,7 +252,7 @@ var scrollVis = function() {
      .enter().append("line")
        .attr("class", "natl")
        .attr("y1", 0)
-       .attr("y2", height + margin.top + margin.bottom)
+       .attr("y2", height)
        .attr("x1", function(d) {return x(d.natl2010)})
        .attr("x2", function(d) {return x(d.natl2010)})
        .style("opacity", 0);
@@ -261,14 +263,14 @@ var scrollVis = function() {
          .enter().append("line")
            .attr("class", "natl2010")
            .attr("y1", 0)
-           .attr("y2", height + margin.top + margin.bottom)
+           .attr("y2", height)
            .attr("x1", function(d) {return x(d.natl2010)})
            .attr("x2", function(d) {return x(d.natl2010)})
            .style("stroke-dasharray", ("5, 10"))
            .style("opacity", 0);
 
   // LINE: Change 2010 --> 2014
-     var lineChange = plotG.selectAll("change")
+     var lineChange = plotG.selectAll(".change")
            .data(data)
        .enter().append("line")
            .attr("class", "change")
@@ -278,7 +280,7 @@ var scrollVis = function() {
           //  .attr("y2", function(d) {return y(d.livelihood_zone) + y.bandwidth()/2})
            .attr("x1", function(d) {return x(d.avg2010)})
            .attr("x2", function(d) {return x(d.avg2014)})
-           .style("opacity", 0)
+           .style("opacity", 0);
 
    // TEXT: national annotation
    plotG.selectAll(".natl-annot")
@@ -313,10 +315,45 @@ var scrollVis = function() {
              .attr("height", "100%")
              .style("opacity", 0);
 
+// TEXT: CI button
+plotG.append("text")
+  // .attr("class", "button")
+  .attr("id", "ciText")
+  .attr("x", width)
+  .attr("y",  height + margin.bottom)
+  .text("show 95% confidence interval")
+  .style("opacity", 0);
 
+ciButton = plotG.select("#ciText");
 
+// LINE: Confidence INTERVALS
+var ci2010 = plotG.selectAll(".ci #y2010")
+  .data(data)
+.enter().append("line")
+  .attr("class", "ci")
+  .attr("id", "y2010")
+  .attr("y1", function(d) {return y(d.livelihood_zone)})
+  .attr("y2", function(d) {return y(d.livelihood_zone)})
+//  .attr("y1", function(d) {return y(d.livelihood_zone) + y.bandwidth()/2})
+//  .attr("y2", function(d) {return y(d.livelihood_zone) + y.bandwidth()/2})
+  .attr("x1", function(d) {return x(d.lb2010)})
+  .attr("x2", function(d) {return x(d.ub2010)})
+  .style("opacity", 0);
 
-         // DOTS: Dot mask to underlie 2010 data when opacity is changed.
+  var ci2014 = plotG.selectAll(".ci #y2014")
+    .data(data)
+  .enter().append("line")
+    .attr("class", "ci")
+    .attr("id", "y2014")
+    .attr("y1", function(d) {return y(d.livelihood_zone)})
+    .attr("y2", function(d) {return y(d.livelihood_zone)})
+  //  .attr("y1", function(d) {return y(d.livelihood_zone) + y.bandwidth()/2})
+  //  .attr("y2", function(d) {return y(d.livelihood_zone) + y.bandwidth()/2})
+    .attr("x1", function(d) {return x(d.lb2014)})
+    .attr("x2", function(d) {return x(d.ub2014)})
+    .style("opacity", 0);
+
+   // DOTS: Dot mask to underlie 2010 data when opacity is changed.
                  var dotMask2010 = plotG.selectAll(".dotMask")
                       .data(data)
                    .enter().append("circle")
@@ -505,6 +542,9 @@ var scrollVis = function() {
     hideAvg();
 
     hideValues();
+
+    hideCIbutton();
+
   }
 
 
@@ -532,6 +572,8 @@ var scrollVis = function() {
 
     showAvg();
 
+    showCIbutton();
+
     plotG.selectAll(".dot.dotMain")
       .transition()
         .duration(350)
@@ -550,10 +592,25 @@ var scrollVis = function() {
         .duration(600)
         .style("opacity", 1.0)
 
+
+    ciButton.on("click", function(d){
+      if(allowCI){ // ciButton is exposed
+        if(ciClick % 2) { // If pressed once, turn on.  If pressed again, turn off.
+          hideCI();
+
+          ciButton.text("show 95% confidence interval");
+      } else{
+        showCI();
+
+        ciButton.text("hide 95% confidence interval");
+      }
+      // update click counter
+        ciClick++;
+    }
+    });
+
     beansWheat.on("mouseover", function(d){
-
       plotG.selectAll('circle')
-
       .transition()
       .duration(500)
           .style("opacity", 0.3)
@@ -575,7 +632,7 @@ var scrollVis = function() {
                     .style("opacity", 0.3)
                   .filter(function(d) {return d.livelihood_zone == 'Northern Highland Beans and Wheat'})
                      .style("opacity", 1);
-    })
+    });
 
     beansWheat.on("mouseout", function(d){
       plotG.selectAll('circle')
@@ -611,12 +668,14 @@ var scrollVis = function() {
    *
    */
   function showMap() {
-    // previous
+    //  -- previous -- and -- subsequent --
     hideX();
     hideY();
     hideLZ();
     hideAvg();
     hideValues();
+    hideCI();
+    hideCIbutton();
 
 
     imgG.selectAll(".rw-map")
@@ -637,7 +696,7 @@ var scrollVis = function() {
         .duration(1000)
         .style("opacity", 0);
 
-// subsequent
+// -- subsequent --
 
 
 // remove duplicate avg line
@@ -668,6 +727,7 @@ plotG.selectAll(".natl2010")
         .style("font-size", "16px")
         .style("fill", "#555")
         .attr("x", function(d) {return x(d.natl2010);});
+
   }
 
 
@@ -676,14 +736,14 @@ plotG.selectAll(".natl2010")
    *
    */
   function showChange() {
-    // previous
+    // -- previous --
     imgG.selectAll(".rw-map")
       .transition()
       .duration(600)
       .style("opacity", 0);
 
 
-// current: dot plot reappear, fade map
+// -- current: dot plot reappear, fade map --
 // change title
 plotG.selectAll(".x.label")
   .text("percent of stunted children under 5")
@@ -692,6 +752,7 @@ plotG.selectAll(".x.label")
 showX();
 showY(600, 0);
 showLZ(600, 0);
+showCIbutton();
 
 // Show the average lines
 plotG.selectAll(".natl2010")
@@ -906,9 +967,41 @@ function hideY() {
     .style("opacity", 0)
 };
 
+// -- CONFIDENCE INTERVALS --
+function showCI() {
+  plotG.selectAll(".ci")
+  .transition()
+  .duration(600)
+  .style("opacity", 0.25)
+};
 
+function hideCI() {
+  plotG.selectAll(".ci")
+  .transition()
+  .duration(0)
+  .style("opacity", 0)
+};
 
+// button
+function showCIbutton(){
+  ciButton
+    .classed("button", true)
+    .transition()
+    .duration(0)
+    .style("opacity", 1);
 
+  allowCI = true;
+}
+
+function hideCIbutton(){
+  ciButton
+  .classed("button", false)
+    .transition()
+    .duration(0)
+    .style("opacity", 0);
+
+  allowCI = false;
+}
 
   /**
   * TRANSITION VARIABLES
