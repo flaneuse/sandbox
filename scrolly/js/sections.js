@@ -553,25 +553,26 @@ var scrollVis = function() {
     beansWheat.on("mouseover", function(d){
 
       plotG.selectAll('circle')
+
       .transition()
       .duration(500)
-          .style("opacity", 0.5)
+          .style("opacity", 0.3)
         .filter(function(d) {return d.livelihood_zone == 'Northern Highland Beans and Wheat'})
            .attr("r", radius*1.25)
            .style("opacity", 1);
 
 
-           plotG.selectAll("g.y.axis")
+           plotG.selectAll("g.y > g.tick")
            .transition()
            .duration(500)
-               .style("opacity", 0.5)
-             .filter(function(d, i) {return d.livelihood_zone == 'Northern Highland Beans and Wheat'})
+               .style("opacity", 0.3)
+             .filter(function(d) {return d == 'Northern Highland Beans and Wheat'})
                 .style("opacity", 1);
 
           plotG.selectAll('.lz-icons')
                 .transition()
                 .duration(500)
-                    .style("opacity", 0.5)
+                    .style("opacity", 0.3)
                   .filter(function(d) {return d.livelihood_zone == 'Northern Highland Beans and Wheat'})
                      .style("opacity", 1);
     })
@@ -583,10 +584,10 @@ var scrollVis = function() {
            .style("opacity", 1)
            .attr("r", radius);
 
-      plotG.selectAll('.y.axis')
+           plotG.selectAll("g.y > g.tick")
            .transition()
            .duration(500)
-                .style("opacity", 1);
+           .style("opacity", 1);
 
           plotG.selectAll('.lz-icons')
                 .transition()
