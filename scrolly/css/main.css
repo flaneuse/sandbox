@@ -11,6 +11,11 @@ body{
   color: #333;
 }
 
+.highlight {
+  color: #008080;
+}
+
+
 .top-label {
   float: left;
   margin-left: 250px;
