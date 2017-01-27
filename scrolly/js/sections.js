@@ -24,6 +24,9 @@ var scrollVis = function() {
   var activeIndex = 0;
 
 
+  // div used for initial text
+  var intro = null;
+
   // main svg used for visualization
   var svg = null;
 
@@ -117,6 +120,8 @@ var scrollVis = function() {
   // progress through the section.
   var updateFunctions = [];
 
+/**
+**/
   /**
    * chart
    *
@@ -231,17 +236,17 @@ var scrollVis = function() {
 
 
 // FRAME 0: initial settings
-         plotG.append("text")
-           .attr("class", "title rwanda-title")
-           .attr("x", width / 2)
-           .attr("y", height / 3)
-           .text("title");
-
-         plotG.append("text")
-           .attr("class", "sub-title rwanda-title")
-           .attr("x", width / 2)
-           .attr("y", (height / 3) + (height / 5) )
-           .text("tbd");
+        //  plotG.append("text")
+        //    .attr("class", "title rwanda-title")
+        //    .attr("x", width / 2)
+        //    .attr("y", height / 3)
+        //    .text("");
+         //
+        //  plotG.append("text")
+        //    .attr("class", "sub-title rwanda-title")
+        //    .attr("x", width / 2)
+        //    .attr("y", (height / 3) + (height / 5) )
+        //    .text("");
 
          plotG.selectAll(".rwanda-title")
            .style("opacity", 0);

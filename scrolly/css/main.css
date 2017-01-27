@@ -11,10 +11,54 @@ body{
   color: #333;
 }
 
-.intro {
+#intro .title, .subtitle{
   font-family: "Lora", serif;
+  text-align: center;
+}
+
+#intro .title{
+  font-size: 48px;
+    color: #666;
+      padding-bottom: 25px;
+}
+
+#intro .subtitle{
   font-size: 28px;
-  fill: #555;
+    color: #999;
+    padding-bottom: 10px;
+}
+
+#intro > .step > .paragraph{
+  font-size: 20px;
+  line-height: 1.25em;
+}
+
+#intro-sum .subtitle{
+  text-align: left;
+}
+
+.summary-list{
+    padding-left: 100px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    border-top: 2px solid #bababa;
+    border-bottom: 2px solid #bababa;
+    /*font-family: "Lora", serif;*/
+    font-size: 22px;
+    line-height: 1.25em;
+}
+
+.summary-list > li {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.accent-red {
+  color: #d53e4f;
+}
+
+.accent-green {
+  color: #66c2a5;
 }
 
 #ciText {
