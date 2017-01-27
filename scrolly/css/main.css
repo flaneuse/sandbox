@@ -11,6 +11,12 @@ body{
   color: #333;
 }
 
+.intro {
+  font-family: "Lora", serif;
+  font-size: 28px;
+  fill: #555;
+}
+
 #ciText {
   font-family: "Oxygen", sans-serif;
   font-size: 11px;
