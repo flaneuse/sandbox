@@ -60,7 +60,7 @@
     if(error) throw error;
 
     lz = data.filter(function(d) {return d.livelihood_zone;});
-    console.log(lz)
+
       //  var nested = d3.nest()
       //     .key(function(d) {return d.year;})
       //     .sortKeys(d3.ascending)
@@ -102,97 +102,13 @@
     .tickFormat("")
   );
 
-// add reference line
-  var natlAvg2010 = svg.append("g")
-    .attr("class", "natl");
-
-  // var natlAvg2014 = svg.append("g")
-  //   .attr("class", "natl");
-
-
-  natlAvg2010.selectAll("natl")
-    .data(data)
-  .enter().append("line")
-    .attr("y1", 0)
-    .attr("y2", height + margin.top + margin.bottom)
-    .attr("x1", function(d) {return x(d.natl2010)})
-    .attr("x2", function(d) {return x(d.natl2010)})
-    .style("opacity", 1)
-  .transition(t1_change)
-    .attr("x1", function(d) {return x(d.natl2014);})
-    .attr("x2", function(d) {return x(d.natl2014);})
-    // .style("opacity", 0)
-    // .remove()
-
-  // natlAvg2014.selectAll("natl")
-  //   .data(data)
-  // .enter().append("line")
-  //   .attr("y1", 0)
-  //   .attr("y2", height + margin.top + margin.bottom)
-  //   .attr("x1", function(d) {return x(d.natl2014)})
-  //   .attr("x2", function(d) {return x(d.natl2014)})
-  //   .style("opacity", 0)
-  // .transition(t1_change)
-  //   .style("opacity", 1)
-
-
-// create lines that connect the dots.
-  var lineChange = svg.append("g")
-    .attr("class", "change")
-
-  lineChange.selectAll("change")
-    .data(data)
-  .enter().append("line")
-    .attr("y1", function(d) {return y(d.livelihood_zone) + y.bandwidth()/2})
-    .attr("y2", function(d) {return y(d.livelihood_zone) + y.bandwidth()/2})
-    .attr("x1", function(d) {return x(d.avg2010)})
-    .attr("x2", function(d) {return x(d.avg2014)});
-
-// // test line
-// var lineFncn = d3.line()
-//   .x(function(d) { return x(d.avg2010); })
-//   .y(function(d) { return y(d.livelihood_zone); });
-//
-//   var lineChange2 = svg.append("path")
-//     .data([data])
-//     .attr("class", "natl2")
-//     .attr("d", lineFncn);
-
 
 // create dots.
-// extra dots to hide the connector line.
-  var dotGroupMask = svg.append("g")
-    .attr("class", "dot_mask");
-
-// for 2010 data
-  var dotGroup2010 = svg.append("g")
-    .attr("class", "dot");
-
-
 
 // for 2014 data (copy of 2010 that gets changed)
   var dotGroup2014 = svg.append("g")
     .attr("class", "dot");
 
-// bind the data, transition.
-  dotGroupMask.selectAll("dot")
-    .data(data)
-  .enter().append("circle")
-    .attr("cx", function(d) {return x(d.avg2010)})
-    .attr("cy", function(d) {return y(d.livelihood_zone)+y.bandwidth()/2})
-    .attr("r", radius);
-
-  dotGroup2010.selectAll("dot")
-     .data(data)
-  .enter().append("circle")
-    .attr("cx", function(d) {return x(d.avg2010)})
-    .attr("cy", function(d) {return y(d.livelihood_zone)+y.bandwidth()/2})
-    .attr("r", radius)
-    .style("fill", function(d) {return z(d.avg2010)})
-    .style("fill-opacity", 1)
-  .transition()
-    .duration(5000)
-    .style("fill-opacity", 0.2);
 
   dotGroup2014.selectAll("dot")
     .data(data)
@@ -202,7 +118,7 @@
     .attr("r", radius)
     .style("fill", function(d) {return z(d.avg2010)})
     .style("fill-opacity", 1)
-  .transition()
+   .transition()
     // .delay(function(d,i) {return i*100;})
     .duration(4000)
     .attr("cx", function(d) {return x(d.avg2014)})
