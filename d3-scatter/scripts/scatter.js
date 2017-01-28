@@ -4,7 +4,7 @@
   var radius = 10;
 
 // color palette of dots
-  var colorPalette = d3.interpolateMagma;
+  var colorPalette = d3.interpolateSpectral;
 
 // -- INITIALIZE VARIABLES --
 // set dimensions of viz. w/ margins
@@ -49,32 +49,47 @@
   body.append("div")
       .attr("class", "top-label")
    .append("p")
-      .text("percent of stunted children under 5");
+      .text("percent of married women using modern contraception");
 
   body.append("div")
       .attr("class", "clearfix")
 
 // -- DATA --
 // import data as csv.
-  d3.csv("data/DHS_stunted_unweighted.csv", function(error, data){
+  d3.csv("data/fp.csv", function(error, data){
     if(error) throw error;
 
-    lz = data.filter(function(d) {return d.livelihood_zone;});
+  // sort the average values, descendingly.
+    data.sort(function(a,b) {return b.ave-a.ave;});
+    // console.log(data)
 
-      //  var nested = d3.nest()
-      //     .key(function(d) {return d.year;})
-      //     .sortKeys(d3.ascending)
-      //     .entries(data);
-       //
-      //     console.log(nested)
+    lz = data.filter(function(d) {return d.Variable;});
+
+       var nested = d3.nest()
+       .key(function(d) { return d.Category })
+      //  .key(function(d) { return d.year; })
+          .sortKeys(d3.ascending)
+          .entries(data);
+
+          console.log(nested)
+
+          // Clicky buttons at top.
+          body.selectAll(".top-label")
+              .data(nested)
+              .enter().append("div")
+            .attr("class", "button")
+            .attr("id", "select-cat")
+            .attr("x", function(d, i) {return i*150 + 10;})
+            .attr("y",100)
+            .text(function(d) {return d.key;});
 
 // set the domain (data range) of data
 // ! Note: should make more extendable by looking for the max in _either_ avg2010 or avg2014.
-  x.domain([0, d3.max(data, function(element) { return element.avg2010; })]);
-  y.domain(data.map(function(element) {return element.livelihood_zone}));
+  x.domain([0, d3.max(data, function(element) { return element.ave; })]);
+  y.domain(data.map(function(element) {return element.Variable}));
 
   // z.domain([d3.max(data, function(element) { return element.avg; }), 0]);
-  z.domain([1, 0.2]);
+  z.domain([-0.2, 0.6]);
 
 // create the SVG object
   var svg = body.append("svg")
@@ -84,14 +99,45 @@
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 
+
+// Outer g for dots.
+    var g = svg.selectAll("g")
+        .data(nested)
+      .enter().append("g")
+      .filter(function(d) {return d.key == "Religion"});
+
+
+
+
+  // g.selectAll("text")
+  // // we are getting the values of the countries like this:
+  // .data(function(d) {return d.values})
+  // .enter()
+  //     .append("text")
+  //     .attr("y", function(d, i) {return i*30 + 100;})
+  //     .attr("x",200)
+  //     .text(function(d) {return d.ave;});
+
+      g.selectAll("circle")
+      // we are getting the values of the countries like this:
+      .data(function(d) {return d.values})
+      .enter()
+          .append("circle")
+          .attr("class", "dot")
+          .attr("r", radius)
+          .attr("cx", function(d) {return x(+d.ave);})
+          .attr("cy", function(d) {return y(d.Variable);})
+          .attr("fill", function(d) {return z(+d.ave);});
+
 // image
-  var imgs = svg.selectAll("image")
-    .data(lz)
-  .enter().append("image")
-    .attr("xlink:href", function(d) {return "/img/" +  d.livelihood_zone + ".png"})
-    .attr("x", d3.max(data, function(element) { return x(element.avg2010 * 1.03); }))
-    .attr("y", function(d) {return y(d.livelihood_zone)})
-    .attr("height", y.bandwidth());
+  // var imgs = svg.selectAll("image")
+  //   .data(lz)
+  // .enter().append("image")
+  // .attr("xlink:href", function(d) {return "/img/Kigali city.png"})
+  // // .attr("xlink:href", function(d) {return "/img/" +  d.Variable + ".png"})
+  //   .attr("x", d3.max(data, function(element) { return x(element.ave * 1.03); }))
+  //   .attr("y", function(d) {return y(d.Variable)})
+  //   .attr("height", y.bandwidth());
 
 // add the X gridlines
   svg.append("g")
@@ -103,6 +149,7 @@
   );
 
 
+
 // create dots.
 
 // for 2014 data (copy of 2010 that gets changed)
@@ -110,19 +157,19 @@
     .attr("class", "dot");
 
 
-  dotGroup2014.selectAll("dot")
-    .data(data)
-  .enter().append("circle")
-    .attr("cx", function(d) {return x(d.avg2010)})
-    .attr("cy", function(d) {return y(d.livelihood_zone)+y.bandwidth()/2})
-    .attr("r", radius)
-    .style("fill", function(d) {return z(d.avg2010)})
-    .style("fill-opacity", 1)
-   .transition()
-    // .delay(function(d,i) {return i*100;})
-    .duration(4000)
-    .attr("cx", function(d) {return x(d.avg2014)})
-    .style("fill", function(d) {return z(d.avg2014)});
+  // dotGroup2014.selectAll("dot")
+  //   .data(data)
+  // .enter().append("circle")
+  //   .attr("cx", function(d) {return x(d.ave)})
+  //   .attr("cy", function(d) {return y(d.Variable)+y.bandwidth()/2})
+  //   .attr("r", radius)
+  //   .style("fill", function(d) {return z(d.ave)})
+  //   .style("fill-opacity", 1)
+  //  .transition()
+  //   // .delay(function(d,i) {return i*100;})
+  //   .duration(4000)
+  //   .attr("cx", function(d) {return x(d.ave)})
+  //   .style("fill", function(d) {return z(d.ave)});
 
 
 // draw the axes
