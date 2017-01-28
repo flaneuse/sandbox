@@ -8,6 +8,7 @@
 
 // place holder for which category selected
 var selectedCat = "Religion";
+var selectedYear = 2014;
 
 // -- INITIALIZE VARIABLES --
 // set dimensions of viz. w/ margins
@@ -63,9 +64,13 @@ var selectedCat = "Religion";
   d3.csv("data/fp.csv", function(error, data){
     if(error) throw error;
 
+    // Remove 2010 data
+
+
   // sort the average values, descendingly.
     data.sort(function(a,b) {return b.ave-a.ave;});
-    // console.log(data)
+
+    console.log(data)
 
     lz = data.filter(function(d) {return d.Variable;});
 
@@ -73,8 +78,7 @@ var selectedCat = "Religion";
        .key(function(d) { return d.Category })
       //  .key(function(d) { return d.year; })
           .sortKeys(d3.ascending)
-          .entries(data);
-
+          .entries(data.filter(function(d) {return d.year == selectedYear}));
           console.log(nested)
 
 
@@ -87,13 +91,14 @@ var selectedCat = "Religion";
             nav.selectAll("ul")
               .style("width", "20px")
               .data(nested)
-            .enter().append("li")
+            .enter().append("li").append("a")
               .attr("id", "cats")
               .attr("class", "button")
               .attr("x", function(d, i) {return i*150 + 10;})
-              .attr("y",100);
+              .attr("y",100)
+              .text(function(d) {return d.key;});
 
-
+          //
           // body.selectAll("#top-nav")
           //     .data(nested)
           //     .enter().append("li")
@@ -110,6 +115,20 @@ var selectedCat = "Religion";
   // z.domain([d3.max(data, function(element) { return element.avg; }), 0]);
   z.domain([-0.2, 0.6]);
 
+// FILTER DATA
+function filterData(nested, selectedYear, selectedCat){
+  var filtered = nested
+    // .data(function(d) {return d.values})
+    .filter(function(d) {return d.Category == selectedCat})
+    .filter(function(d) {return d.year == selectedYear});
+
+console.log(filtered);
+
+return(filtered);
+}
+
+filterData(nested, selectedYear, selectedCat)
+
 // UPDATE Y DOMAIN
 function updateY(data, selectedCat) {
   y.domain(data
@@ -120,7 +139,6 @@ function updateY(data, selectedCat) {
 
 // Initialize y-domain.
 updateY(data, selectedCat);
-    console.log(y.domain())
 
 // create the SVG object
   var svg = vis.append("svg")

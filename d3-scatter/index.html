@@ -78,34 +78,64 @@
     display:none;
   }
 
-.button{
-  cursor: pointer;
-}
+
 
 ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    background-color: lightgreen;
-}
-
-#select-cat {
-  height: 20px;
-  background-color: lightblue;
-}
-
-li > #select-cat > .button{
   list-style-type: none;
   margin: 0;
   padding: 0;
   overflow: hidden;
-  background-color: #333;
-  float: left;
-display: inline-block;
-color: #f2f2f2;
-text-align: center;
-padding: 14px 16px;
-text-decoration: none;
+}
+
+#select-cat {
+
+}
+
+#select-cat > li {
+    float: right;
+
+}
+
+.button {
+    cursor: pointer;
+    display: block;
+    text-align: center;
+    box-shadow:  1px 3px 10px 0px rgba(0,0,0,0.2);
+    border-radius: 5px;
+    margin: 5px;
+    padding-top: 8px;
+    padding-bottom: 11px;
+    padding-left: 20px;
+    padding-right: 20px;
+    background-color: #eee;
+    position:relative;
+}
+
+.button:before {
+  content: " ";
+  position: absolute;
+  z-index: 50; /*place above the button*/
+  border-radius: 0px 0px 5px 5px;
+  left: 1px;
+  right: 1px;
+  bottom: 0px;
+  border: 3px solid #ddd;
+}
+
+.button:after {
+  content: " ";
+  position: absolute;
+  z-index: 90; /*place above the button*/
+  border-radius: 5px;
+  border: 1px solid #aaa;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  top: 0px;
+}
+
+.button:hover{
+  background-color: #f8f8f8;
 }
   </style>
 
@@ -114,7 +144,7 @@ text-decoration: none;
 
 <!-- start of body -->
 <body>
-<h1 class = "blueclass">test title</h1>
+<h1 class = "blueclass">test <a href="http://google.com">title</a></h1>
 
 <div class="container">
 
