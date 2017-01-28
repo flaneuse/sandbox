@@ -82,9 +82,30 @@
   cursor: pointer;
 }
 
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    background-color: lightgreen;
+}
+
 #select-cat {
-  background-color: grey;
   height: 20px;
+  background-color: lightblue;
+}
+
+li > #select-cat > .button{
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #333;
+  float: left;
+display: inline-block;
+color: #f2f2f2;
+text-align: center;
+padding: 14px 16px;
+text-decoration: none;
 }
   </style>
 
@@ -95,6 +116,21 @@
 <body>
 <h1 class = "blueclass">test title</h1>
 
+<div class="container">
+
+  <!-- BREADCRUMBS -->
+    <div class="navbar-fixed-right" id="breadcrumbs">
+      </div>
+
+  <!-- GRAPHIC (row with everything responsive inside) -->
+  <div class="row" id='graphic'>
+        <div class="col-sm-4" id='sections'>
+        </div>
+
+        <div class="col-sm-4" id='vis'>
+        </div>
+      </div>
+    </div>
 
 <script src="https://d3js.org/d3.v4.min.js"></script>
 <!-- load Color Brewer -->

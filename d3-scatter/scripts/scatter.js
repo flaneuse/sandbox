@@ -6,6 +6,9 @@
 // color palette of dots
   var colorPalette = d3.interpolateSpectral;
 
+// place holder for which category selected
+var selectedCat = "Religion";
+
 // -- INITIALIZE VARIABLES --
 // set dimensions of viz. w/ margins
   var margin = {top: 30, right: 75, bottom: 0, left: 250},
@@ -13,6 +16,8 @@
     height = 450 - margin.top - margin.bottom;
 
   var body = d3.select("body");
+
+  var vis = d3.select("#vis");
 
 // define scales (# pixels for each axis)
   var x = d3.scaleLinear()
@@ -46,13 +51,12 @@
   body.append("h2")
       .text("random text");
 
-  body.append("div")
-      .attr("class", "top-label")
-   .append("p")
-      .text("percent of married women using modern contraception");
+
 
   body.append("div")
       .attr("class", "clearfix")
+
+
 
 // -- DATA --
 // import data as csv.
@@ -73,38 +77,70 @@
 
           console.log(nested)
 
+
           // Clicky buttons at top.
-          body.selectAll(".top-label")
-              .data(nested)
-              .enter().append("div")
-            .attr("class", "button")
+          // create the nav bar
+          var nav = vis.append("ul")
             .attr("id", "select-cat")
-            .attr("x", function(d, i) {return i*150 + 10;})
-            .attr("y",100)
-            .text(function(d) {return d.key;});
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+            nav.selectAll("ul")
+              .style("width", "20px")
+              .data(nested)
+            .enter().append("li")
+              .attr("id", "cats")
+              .attr("class", "button")
+              .attr("x", function(d, i) {return i*150 + 10;})
+              .attr("y",100);
+
+
+          // body.selectAll("#top-nav")
+          //     .data(nested)
+          //     .enter().append("li")
+          //   .attr("class", "button")
+          //   .attr("id", "select-cat")
+          //   .attr("x", function(d, i) {return i*150 + 10;})
+          //   .attr("y",100)
+          //   .text(function(d) {return d.key;});
 
 // set the domain (data range) of data
-// ! Note: should make more extendable by looking for the max in _either_ avg2010 or avg2014.
+// ! Note: y domain set after filtering the data.
   x.domain([0, d3.max(data, function(element) { return element.ave; })]);
-  y.domain(data.map(function(element) {return element.Variable}));
 
   // z.domain([d3.max(data, function(element) { return element.avg; }), 0]);
   z.domain([-0.2, 0.6]);
 
+// UPDATE Y DOMAIN
+function updateY(data, selectedCat) {
+  y.domain(data
+    .filter(function(d) {return d.Category == selectedCat})
+    .map(function(element) {return element.Variable})
+  );
+}
+
+// Initialize y-domain.
+updateY(data, selectedCat);
+    console.log(y.domain())
+
 // create the SVG object
-  var svg = body.append("svg")
+  var svg = vis.append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+// x-axis label
+    svg.append("div")
+        .attr("class", "top-label")
+     .append("p")
+        .text("percent of married women using modern contraception");
 
-
+// FILTER THE DATA
 // Outer g for dots.
     var g = svg.selectAll("g")
         .data(nested)
       .enter().append("g")
-      .filter(function(d) {return d.key == "Religion"});
+      .filter(function(d) {return d.key == selectedCat});
 
 
 
