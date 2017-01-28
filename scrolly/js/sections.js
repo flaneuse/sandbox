@@ -252,10 +252,11 @@ var scrollVis = function() {
            .style("opacity", 0);
 
 // LINE: Natl. avg line (2010/2014)
-   plotG.selectAll(".natl")
+   plotG.selectAll("#natlAll")
        .data(natlData)
      .enter().append("line")
        .attr("class", "natl")
+       .attr("id", "natlAll")
        .attr("y1", 0)
        .attr("y2", height)
        .attr("x1", function(d) {return x(d.natl2010)})
@@ -263,10 +264,11 @@ var scrollVis = function() {
        .style("opacity", 0);
 
 // LINE: natl. avg. 2010
-    plotG.selectAll(".natl2010")
+    plotG.selectAll("#natl2010")
            .data(natlData)
          .enter().append("line")
-           .attr("class", "natl2010")
+           .attr("class", "natl")
+           .attr("id", "natl2010")
            .attr("y1", 0)
            .attr("y2", height)
            .attr("x1", function(d) {return x(d.natl2010)})
@@ -288,10 +290,11 @@ var scrollVis = function() {
            .style("opacity", 0);
 
    // TEXT: national annotation
-   plotG.selectAll(".natl-annot")
+   plotG.selectAll("#natl-annot")
          .data(natlData)
        .enter().append("text")
          .attr("class", "natl-annot")
+          .attr("id", "natl-annot")
          .attr("x", function(d) {return x(d.natl2010)})
          .attr("y", 40) // NOTE: hard coding for now.
          // .attr("y", y.bandwidth())
@@ -300,10 +303,11 @@ var scrollVis = function() {
          .style("opacity", 0);
 
 // TEXT: national annotation 2010
-         plotG.selectAll(".natl-annot2010")
+         plotG.selectAll("#natl-annot2010")
                .data(natlData)
              .enter().append("text")
-               .attr("class", "natl-annot2010")
+               .attr("class", "natl-annot")
+               .attr("id", "natl-annot2010")
                .attr("x", function(d) {return x(d.natl2010)})
                .attr("y", 480) // NOTE: hard coding for now.
                // .attr("y", y.bandwidth())
@@ -315,10 +319,30 @@ var scrollVis = function() {
 // MAP: map
            imgG.append("image")
              .attr("class", "rw-map")
+             .attr("id", "choro2010")
              .attr("xlink:href", function(d) {return "/img/dhs2010_choro_lab.png"})
              .attr("width", "100%")
              .attr("height", "100%")
              .style("opacity", 0);
+
+// MAP: regression coefs, 2010
+      imgG.append("image")
+        .attr("class", "rw-map")
+        .attr("id", "regr2010")
+        .attr("xlink:href", function(d) {return "/img/stuntingRegr2010.png"})
+        .attr("x", 0)
+        .attr("width", "45%")
+        .attr("height", "100%")
+        .style("opacity", 0);
+
+        imgG.append("image")
+          .attr("class", "rw-map")
+          .attr("id", "regr2014")
+          .attr("x", (width + margin.left + margin.right)/2)
+          .attr("xlink:href", function(d) {return "/img/stuntingRegr2014.png"})
+          .attr("width", "45%")
+          .attr("height", "100%")
+          .style("opacity", 0);
 
 // TEXT: CI button
 plotG.append("text")
@@ -362,7 +386,7 @@ var ci2010 = plotG.selectAll(".ci #y2010")
                  var dotMask2010 = plotG.selectAll(".dotMask")
                       .data(data)
                    .enter().append("circle")
-                      .attr("class", "dotMask")
+                      .attr("class", "dot dotMask")
                       .attr("cx", function(d) {return x(d.avg2010)})
                       .attr("cy", function(d) {return y(d.livelihood_zone)})
                       // .attr("cy", function(d) {return y(d.livelihood_zone)+y.bandwidth()/2})
@@ -442,6 +466,7 @@ var ci2010 = plotG.selectAll(".ci #y2010")
     activateFunctions[3] = showMap;
     activateFunctions[4] = showChange;
     activateFunctions[5] = showChange2;
+    activateFunctions[6] = showRegrMap;
 
     // updateFunctions are called while
     // in a particular section to update
@@ -449,7 +474,7 @@ var ci2010 = plotG.selectAll(".ci #y2010")
     // Most sections do not need to be updated
     // for all scrolling and so are set to
     // no-op functions.
-    for(var i = 0; i < 6; i++) {
+    for(var i = 0; i < 7; i++) {
       updateFunctions[i] = function() {};
     }
     // If using any updateFunctions, call it here.
@@ -658,7 +683,7 @@ var ci2010 = plotG.selectAll(".ci #y2010")
     })
 
         // subsequent
-        imgG.selectAll(".rw-map")
+        imgG.selectAll("#choro2010")
           .transition()
           .duration(0)
           .style("opacity", 0);
@@ -683,7 +708,7 @@ var ci2010 = plotG.selectAll(".ci #y2010")
     hideCIbutton();
 
 
-    imgG.selectAll(".rw-map")
+    imgG.selectAll("#choro2010")
       .transition()
       .duration(600)
       .style("opacity", 1);
@@ -705,13 +730,13 @@ var ci2010 = plotG.selectAll(".ci #y2010")
 
 
 // remove duplicate avg line
-plotG.selectAll(".natl2010")
+plotG.selectAll("#natl2010")
   .transition()
   .duration(0)
   .style("opacity", 0);
 
   // change avg. label
-  plotG.selectAll(".natl-annot2010")
+  plotG.selectAll("#natl-annot2010")
   .transition()
   .duration(0)
     .style("opacity", 0);
@@ -721,13 +746,13 @@ plotG.selectAll(".natl2010")
   // reanimate dots
 
   // change avg. line
-  plotG.selectAll(".natl")
+  plotG.selectAll("#natlAll")
     .style("opacity", 0)
     .attr("x1", function(d) {return x(d.natl2010);})
     .attr("x2", function(d) {return x(d.natl2010);});
 
     // change avg. label
-    plotG.selectAll(".natl-annot")
+    plotG.selectAll("#natl-annot")
       .text(function(d) {return "national average: " + d3.format(".0%")(d.natl2010)})
         .style("font-size", "16px")
         .style("fill", "#555")
@@ -742,7 +767,7 @@ plotG.selectAll(".natl2010")
    */
   function showChange() {
     // -- previous --
-    imgG.selectAll(".rw-map")
+    imgG.selectAll("#choro2010")
       .transition()
       .duration(600)
       .style("opacity", 0);
@@ -760,13 +785,13 @@ showLZ(600, 0);
 showCIbutton();
 
 // Show the average lines
-plotG.selectAll(".natl2010")
+plotG.selectAll("#natl2010")
   .transition()
   .duration(600)
   .style("opacity", 1);
 
   // change avg. label
-  plotG.selectAll(".natl-annot2010")
+  plotG.selectAll("#natl-annot2010")
   .transition()
   .duration(600)
     .style("opacity", 1)
@@ -790,7 +815,7 @@ plotG.selectAll(".dot.dotMain")
 // add 2010/2014 annotation
 
 // change avg. line
-plotG.selectAll(".natl")
+plotG.selectAll("#natlAll")
   .style("opacity", 1)
   .attr("x1", function(d) {return x(d.natl2010);})
   .attr("x2", function(d) {return x(d.natl2010);})
@@ -801,7 +826,7 @@ plotG.selectAll(".natl")
   .attr("x2", function(d) {return x(d.natl2014);});
 
   // change avg. label
-  plotG.selectAll(".natl-annot")
+  plotG.selectAll("#natl-annot")
     .text(function(d) {return "2014: " + d3.format(".0%")(d.natl2014)})
       .style("font-size", "28px")
     .transition()
@@ -840,7 +865,13 @@ plotG.selectAll(".dot.dot2010")
    *
    */
   function showChange2() {
-    // -- current --
+    // -- CURRENT --
+    showX();
+    showY();
+    showLZ();
+    showAvg();
+    showCIbutton();
+
     // add in the dots to protect the opacity changes
     plotG.selectAll(".dotMask")
       .style("opacity", 1);
@@ -868,17 +899,71 @@ plotG.selectAll(".dot.dot2010")
         .style("font-size", "16px")
         .style("fill", "#555");
 
-    plotG.selectAll(".natl-annot2010")
-            .style("font-size", "16px")
-            .style("fill", "#555");
 
 // add 2010/2014 change data
       plotG.selectAll(".change")
               .transition()
               .duration(1000)
               .style("opacity", 1);
+
+  // -- SUBSEQUENT -- (for reversing)
+  imgG.selectAll("#regr2010")
+    .transition()
+    .duration(0)
+    .style("opacity", 0);
+
+  imgG.selectAll("#regr2014")
+      .transition()
+      .duration(0)
+      .style("opacity", 0);
   }
 
+
+function showRegrMap() {
+  // -- PREVIOUS --
+  hideX();
+  hideY();
+  hideLZ();
+  hideAvg();
+  hideValues();
+  hideCI();
+  hideCIbutton();
+
+    plotG.selectAll(".dot")
+    .transition()
+    .duration(0)
+    .style("fill-opacity", 0)
+    .style("stroke-opacity", 0);
+
+  plotG.selectAll(".natl")
+  .transition()
+  .duration(0)
+  .style("opacity", 0);
+
+  plotG.selectAll(".change")
+  .transition()
+  .duration(0)
+  .style("opacity", 0);
+
+  plotG.selectAll(".natl-annot")
+  .transition()
+  .duration(0)
+  .style("opacity", 0);
+
+  // -- CURRENT --
+  imgG.selectAll("#regr2010")
+    .transition()
+    .duration(600)
+    .style("opacity", 1);
+
+  imgG.selectAll("#regr2014")
+      .transition()
+      .delay(300)
+      .duration(1600)
+      .style("opacity", 1);
+
+  // -- SUBSEQUENT -- (for reversing)
+}
 
   /**
    * HELPER FUNCTIONS
@@ -941,24 +1026,24 @@ function hideY() {
       }
   // -- NATL AVG LINE --
   function showAvg() {
-    plotG.selectAll(".natl")
+    plotG.selectAll("#natlAll")
     .transition()
     .duration(600)
     .style("opacity", 1)
 
-    plotG.selectAll(".natl-annot")
+    plotG.selectAll("#natl-annot")
     .transition()
     .duration(600)
     .style("opacity", 1)
   }
 
   function hideAvg() {
-    plotG.selectAll(".natl")
+    plotG.selectAll("#natlAll")
     .transition()
     .duration(0)
     .style("opacity", 0)
 
-    plotG.selectAll(".natl-annot")
+    plotG.selectAll("#natl-annot")
     .transition()
     .duration(0)
     .style("opacity", 0)
