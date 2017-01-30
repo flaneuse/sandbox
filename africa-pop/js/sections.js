@@ -80,7 +80,9 @@ var numSlides = [0,1,2,3,4];
     {url:"/img/rw-countryside.jpg", title:"Rwandan countryside"},
     {url:"/img/afr1.png", title:"First image"},
     {url:"/img/afr2.png", title:"Second image"},
-    {url:"/img/afr3.png", title:"Third image"}];
+    {url:"/img/afr3.png", title:"Third image"},
+    {url:"/img/afr4.png", title:"Third image"},
+    {url:"/img/afr5.png", title:"Third image"}];
 
   var imageCounter = 0;
 
@@ -268,89 +270,69 @@ imgG.selectAll("text")
   }
 
   function show3() {
-    svg.selectAll(".rect")
-      .transition()
-      .duration(600)
-      .attr("fill", randomColor());
 
-      svg.selectAll("text")
-          .transition()
-          .duration(600)
-          .attr("fill", randomColor())
-          .text("Baboyma is " + randomWord(words));
   }
 
 
   function show4() {
-    svg.selectAll(".rect")
-      .transition()
-      .duration(600)
-      .attr("fill", randomColor());
+    imageCounter = 2;
 
-      svg.selectAll("text")
-          .transition()
-          .duration(600)
-          .attr("fill", randomColor())
-          .text("Baboyma is " + randomWord(words));
+     changeImage();
+
+// change annotations
+     changeAnnot(1, 0);
+
+// revert zoom
+// NOTE: FIX!!
+// afrMap
+// .transition()
+// .duration(stdTransition)
+// .attr("transform", "translate(-100,-100)" + " scale(1)");
   }
 
   function show5() {
-    svg.selectAll(".rect")
-      .transition()
-      .duration(600)
-      .attr("fill", randomColor());
+    afrMap
+    .transition()
+    .duration(stdTransition*2)
+    .attr("transform", "translate(-1000, -700)" + " scale(3.5)");
+
+    // NOTE: Cross-fade to the real image
+
   }
 
   function show6() {
-    svg.selectAll(".rect")
-      .transition()
-      .duration(600)
-      .attr("fill", randomColor());
+// NOTE: outline Rwanda
 
-      svg.selectAll("text")
-          .transition()
-          .duration(600)
-          .attr("fill", randomColor())
-          .text("Baboyma is " + randomWord(words));
+
+// Reversal
+imageCounter = 2;
+
+ changeImage();
   }
 
   function show7() {
-    svg.selectAll(".rect")
-      .transition()
-      .duration(600)
-      .attr("fill", randomColor());
+    // reset scale
+         afrMap
+         .transition()
+         .duration(0)
+         .attr("transform", "translate(-1000, -700)" + " scale(1)");
+ imageCounter = 3;
 
-      svg.selectAll("text")
-          .transition()
-          .duration(600)
-          .attr("fill", randomColor())
-          .text("Baboyma is " + randomWord(words));
+     changeImage();
+
+
   }
 
   function show8() {
-    svg.selectAll(".rect")
-      .transition()
-      .duration(600)
-      .attr("fill", randomColor());
+    imageCounter = 4;
 
-      svg.selectAll("text")
-          .transition()
-          .duration(600)
-          .attr("fill", randomColor())
-          .text("Baboyma is " + randomWord(words));
+     changeImage();
   }
 
   function show9() {
-    svg.selectAll(".rect")
-      .transition()
-      .duration(600)
-      .attr("fill", randomColor());
+    imageCounter = 5;
 
-      svg.selectAll("text")
-          .transition()
-          .duration(600)
-          .attr("fill", randomColor())
-          .text("Baboyma is " + randomWord(words));
+     changeImage();
   }
 
 // HELPER FUNCTIONS ---------
