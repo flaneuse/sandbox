@@ -7,14 +7,16 @@
  * responsiveness code based on http://blog.apps.npr.org/2014/05/19/responsive-charts.html
  */
 var scrollVis = function() {
+// Define std. transition length
+stdTransition = 600;
 
 // Define graphic aspect ratio.
 // Based on iPad w/ 2/3 of max width taken up by vis., 2/3 of max height taken up by vis.: 1024 x 768 --> perserve aspect ratio of iPad
 
 // var $graphic = $('#graphic');
 // var graphic_data;
-var graphic_aspect_width = 4;
-var graphic_aspect_height = 3;
+var graphic_aspect_width = 1;
+var graphic_aspect_height = 1;
 // var mobile_threshold = 500;
 var pctVis = 2/3; // percent of #graphic occupied by #vis.
 
@@ -40,11 +42,6 @@ var numSlides = [0,1,2,3,4];
 // clear out existing graphics
 // $graphic.empty();
 
-  // constant
-  words = ["awesome", "clever", "nice", "helpful", "useful", "a javacript master",
-"a nerd", "a coding ninja", "an innovator" , "a relationship manager", "a thought leader",
-"a pioneer", "an enabler", "a co-creator", "a matrix-er", "a disruptor", "bending the curve",
-"a yuge value add", "an accelerator", "a cross-pollinator", "a global solution"];
 
   // Keep track of which visualization
   // we are on and which was the last
@@ -62,6 +59,8 @@ var numSlides = [0,1,2,3,4];
   // for displaying visualizations
   var g = null;
 
+  var imgG = null;
+
   // breadcrumbs
   var breadcrumbs = null;
 
@@ -74,6 +73,25 @@ var numSlides = [0,1,2,3,4];
   // through the section with the current
   // progress through the section.
   var updateFunctions = [];
+
+
+  // IMAGES
+  var imageArray = [
+    {url:"/img/rw-countryside.jpg", title:"Rwandan countryside"},
+    {url:"/img/afr1.png", title:"First image"},
+    {url:"/img/afr2.png", title:"Second image"},
+    {url:"/img/afr3.png", title:"Third image"}];
+
+  var imageCounter = 0;
+
+  // Image annotations
+  var annotArray = [
+    {frame:0, x:100, y:100, text:"Areas in light pink have few people living in the area"},
+    {frame:0, x:100, y:200, text:"... while areas in dark pink and purple have high population density"}];
+
+  var annotCounter = 0;
+
+    console.log(annotArray)
 
   /**
    * chart
@@ -91,11 +109,18 @@ var numSlides = [0,1,2,3,4];
        svg.attr("width", width + margin.left + margin.right);
        svg.attr("height", height + margin.top + margin.bottom);
 
+       // create group for images
+       svg.append("g")
+             .attr("id", "imgs");
 
        // this group element will be used to contain all
        // other elements.
        g = svg.select("g")
          .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+         // this group element will be used to contain all
+         // big image elements (mostly maps; could also be used for static visualizations).
+         imgG = svg.select("#imgs")
 
 // BREADCRUMBS
          // create svg and give it a width and height
@@ -134,25 +159,40 @@ var numSlides = [0,1,2,3,4];
    *
    */
   setupVis = function() {
-    g.append("rect")
-      .attr("class", "rect")
-      .attr("x", 0)
-      .attr("y", 0)
-      .attr("height", height)
-      .attr("width", width)
-      .attr("fill", "slateblue")
-      .style("opacity", 1);
+
+// MAP: map
+  afrMap = imgG.selectAll("image")
+    .data(imageArray)
+  .enter().append("image")
+    .attr("class", "afr-map")
+    .attr("xlink:href", function(d) {return d.url})
+    .attr("width", "100%")
+    .attr("height", "100%")
+    .attr("opacity", 0);
+
+    // afrMap.attr("opacity", 0) //start invisible
+    //   .transition().duration(1000) //schedule a transition to last 1000ms
+    //   .delay(function(d,i){return i*2000;})
+    //     //Delay the transition of each element according to its index
+    //     // in your selection so that it won't start to appear
+    //     // until one second after the last image reached full opacity.
+    //     //The second parameter passed to any function you give to d3
+    //     // is usually the index of that element within the current selection.
+    //   .attr("opacity", 1);
+
+// TEXT: annotations
+imgG.selectAll("text")
+  .data(annotArray)
+.enter().append("text")
+  .attr("class", "afr-annot")
+  .attr("x", function(d) {return d.x;})
+  .attr("y", function(d) {return d.y;})
+  .text(function(d) {return d.text;})
+  .attr("opacity", 0);
+
+// circles: annotations
 
 
-
-      g.append("text")
-        .attr("class", "title openvis-title")
-        .attr("x", width/2)
-        .attr("y", height/2)
-        .style("font-size", 36)
-        .attr("fill", randomColor())
-        .text("Baboyma is " + randomWord(words))
-        .style("opacity", 1);
   };
 
   /**
@@ -209,30 +249,22 @@ var numSlides = [0,1,2,3,4];
    * shows: intro title
    *
    */
-  function show1() {
-    svg.selectAll(".rect")
-      .transition()
-      .duration(600)
-      .attr("fill", randomColor());
 
-    svg.selectAll("text")
-        .transition()
-        .duration(600)
-        .attr("fill", randomColor())
-        .text("Baboyma is " + randomWord(words));
-  }
+   function show1() {
+     imageCounter = 0;
+
+     changeImage();
+
+    changeAnnot(1, 0);
+
+   }
 
   function show2() {
-    svg.selectAll(".rect")
-      .transition()
-      .duration(600)
-      .attr("fill", randomColor());
+    imageCounter = 1;
 
-    svg.selectAll("text")
-          .transition()
-          .duration(600)
-          .attr("fill", randomColor())
-          .text("Baboyma is " + randomWord(words));
+     changeImage();
+
+     changeAnnot(0, 1);
   }
 
   function show3() {
@@ -321,21 +353,41 @@ var numSlides = [0,1,2,3,4];
           .text("Baboyma is " + randomWord(words));
   }
 
-function randomColor() {
-  r = Math.random()*255;
-  g = Math.random()*255;
-  b = Math.random()*255;
+// HELPER FUNCTIONS ---------
 
-  color = d3.rgb(r,g,b);
+function changeImage() {
+  // turn on current layer
+  imgG.selectAll(".afr-map")
+      .filter(function(d,i) {return i == imageCounter})
+  .transition()
+   .duration(stdTransition)
+   .attr("opacity", 1);
 
-  return(color);
+   // turn off other layers
+   imgG.selectAll(".afr-map")
+       .filter(function(d,i) {return i != imageCounter})
+   .transition()
+    .duration(stdTransition)
+    .attr("opacity", 0);
 }
 
-function randomWord(words) {
-  var rand = words[Math.floor(Math.random() * words.length)];
-  return(rand);
-}
 
+function changeAnnot(idxOn, idxOff, tDelay) {
+
+  imgG.selectAll(".afr-annot")
+    .filter(function(d) {return(d.frame == idxOn);})
+ .transition()
+   .delay(1000)
+  .duration(stdTransition)
+  .attr("opacity", 1)
+
+  imgG.selectAll(".afr-annot")
+    .filter(function(d) {return(d.frame == idxOff);})
+ .transition()
+   .delay(0)
+  .duration(stdTransition)
+  .attr("opacity", 0)
+}
   /**
    * activate -
    *
