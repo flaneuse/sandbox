@@ -1,3 +1,13 @@
+body {
+  font-family: "Oxygen", sans-serif;
+  font-weight: 300;
+}
+
+strong {
+  font-weight: 400;
+  color: #66c2a5;
+}
+
 /*Width of main container*/
 .container {
   max-width: 690px;
@@ -38,7 +48,6 @@
 
 .step {
   margin-bottom: 200px;
-  font-family: "Oxygen", sans-serif;
   font-weight: 300;
   /*color: #333;*/
   font-size: 18px;
@@ -47,7 +56,6 @@
 }
 
 #sections .title {
-  font-family: "Oxygen", sans-serif;
   font-weight: 400;
   font-size: 28px;
   margin-bottom: 2px;
