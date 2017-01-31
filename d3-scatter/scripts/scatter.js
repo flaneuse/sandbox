@@ -218,14 +218,20 @@ updateY(data, selectedCat);
       nav.selectAll("a.button:before")
         .style("background-color", function(d,i) {return d.key == selectedCat ? "#dceed7" : "#eee";})
 
+// Change the y-axis.
+updateY(data, selectedCat);
+d3.selectAll(".y.axis")
+  .call(yAxis)
+
+// Update the dots
     d3.selectAll(".dot")
       // .filter(this.Category == selectedCat)
       // .filter(this.year == selectedYear)
       .transition(2000)
         // .attr("class", "dot")
-        .attr("r", radius)
-        .attr("cx", function(d) {console.log(d); return x(+d.ave);})
-        .attr("cy", function(d) {return y(d.Variable) + y.bandwidth()/2;})
+        // .attr("r", radius)
+        // .attr("cx", function(d) {console.log(d); return x(+d.ave);})
+        // .attr("cy", function(d) {return y(d.Variable) + y.bandwidth()/2;})
         // .attr("fill", function(d) {return z(+d.ave);});
         .attr("fill", "red")
   })
