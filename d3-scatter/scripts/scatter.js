@@ -154,7 +154,7 @@ updateY(data, selectedCat);
       .filter(function(d) {return d.key == selectedCat});
 
       svg.selectAll("circle")
-              .data(data)
+          .data(data)
       .enter().append("circle")
         .filter(function(d) {return d.Category == selectedCat })
         .filter(function(d) {return d.year == selectedYear })
@@ -223,15 +223,15 @@ updateY(data, selectedCat);
 d3.selectAll(".y.axis")
   .call(yAxis)
 
+
 // Update the dots
     d3.selectAll(".dot")
-      // .filter(this.Category == selectedCat)
-      // .filter(this.year == selectedYear)
+      .filter(function(d) {return d.Category == selectedCat })
+      .filter(function(d) {return d.year == selectedYear })
       .transition(2000)
-        // .attr("class", "dot")
-        // .attr("r", radius)
-        // .attr("cx", function(d) {console.log(d); return x(+d.ave);})
-        // .attr("cy", function(d) {return y(d.Variable) + y.bandwidth()/2;})
+        .attr("r", radius)
+        .attr("cx", function(d) {console.log(d); return x(+d.ave);})
+        .attr("cy", function(d) {return y(d.Variable) + y.bandwidth()/2;})
         // .attr("fill", function(d) {return z(+d.ave);});
         .attr("fill", "red")
   })
