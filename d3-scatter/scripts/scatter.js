@@ -7,12 +7,12 @@
   var colorPalette = d3.interpolateSpectral;
 
 // place holder for which category selected
-var selectedCat = "Religion";
+var selectedCat = "Livelihood Zone";
 var selectedYear = 2014;
 
 // -- INITIALIZE VARIABLES --
 // set dimensions of viz. w/ margins
-  var margin = {top: 30, right: 75, bottom: 0, left: 250},
+  var margin = {top: 60, right: 75, bottom: 0, left: 250},
     width = 1000 - margin.left - margin.right,
     height = 450 - margin.top - margin.bottom;
 
@@ -57,6 +57,9 @@ var selectedYear = 2014;
   body.append("div")
       .attr("class", "clearfix")
 
+  // BUTTONS
+  wealth = vis.select("#Wealth");
+
 
 
 // -- DATA --
@@ -64,50 +67,48 @@ var selectedYear = 2014;
   d3.csv("data/fp.csv", function(error, data){
     if(error) throw error;
 
-    // Remove 2010 data
-
 
   // sort the average values, descendingly.
     data.sort(function(a,b) {return b.ave-a.ave;});
 
-    console.log(data)
+    // console.log(data)
 
     lz = data.filter(function(d) {return d.Variable;});
 
        var nested = d3.nest()
        .key(function(d) { return d.Category })
       //  .key(function(d) { return d.year; })
-          .sortKeys(d3.ascending)
-          .entries(data.filter(function(d) {return d.year == selectedYear}));
-          console.log(nested)
+          // .sortKeys(d3.ascending)
+          .entries(data);
+          // console.log(nested)
 
-
+// NAVBAR ----------------------------------------------------------------------
           // Clicky buttons at top.
           // create the nav bar
-          var nav = vis.append("ul")
-            .attr("id", "select-cat")
-            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+  var nav = vis.append("ul")
+    .attr("id", "select-cat")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-            nav.selectAll("ul")
-              .style("width", "20px")
-              .data(nested)
-            .enter().append("li").append("a")
-              .attr("id", "cats")
-              .attr("class", "button")
-              .attr("x", function(d, i) {return i*150 + 10;})
-              .attr("y",100)
-              .text(function(d) {return d.key;});
+    nav.selectAll("ul")
+      .style("width", "20px")
+      .data(nested)
+    .enter().append("li").append("a")
+      .attr("id", function(d) {return d.key;})
+      .attr("class", function(d) {return "button " + d.key;})
+      .attr("x", function(d, i) {return i*150 + 10;})
+      .attr("y",100)
+      .text(function(d) {return d.key;})
+      // #cde6c6
+      .style("background-color", function(d,i) {return d.key == selectedCat ? "#dceed7" : "#eee";});
+      // .selectAll(".button:before")
+      // .style("border-color", function(d,i) {return d.key == selectedCat ? "#abdda4" : "#fdd";});
 
-          //
-          // body.selectAll("#top-nav")
-          //     .data(nested)
-          //     .enter().append("li")
-          //   .attr("class", "button")
-          //   .attr("id", "select-cat")
-          //   .attr("x", function(d, i) {return i*150 + 10;})
-          //   .attr("y",100)
-          //   .text(function(d) {return d.key;});
 
+// -----------------------------------------------------------------------------
+
+
+
+// DOMAINS -------------------------------------------------------------------------
 // set the domain (data range) of data
 // ! Note: y domain set after filtering the data.
   x.domain([0, d3.max(data, function(element) { return element.ave; })]);
@@ -115,19 +116,6 @@ var selectedYear = 2014;
   // z.domain([d3.max(data, function(element) { return element.avg; }), 0]);
   z.domain([-0.2, 0.6]);
 
-// FILTER DATA
-function filterData(nested, selectedYear, selectedCat){
-  var filtered = nested
-    // .data(function(d) {return d.values})
-    .filter(function(d) {return d.Category == selectedCat})
-    .filter(function(d) {return d.year == selectedYear});
-
-console.log(filtered);
-
-return(filtered);
-}
-
-filterData(nested, selectedYear, selectedCat)
 
 // UPDATE Y DOMAIN
 function updateY(data, selectedCat) {
@@ -135,10 +123,14 @@ function updateY(data, selectedCat) {
     .filter(function(d) {return d.Category == selectedCat})
     .map(function(element) {return element.Variable})
   );
+
+  console.log(y.domain())
 }
 
 // Initialize y-domain.
 updateY(data, selectedCat);
+// -----------------------------------------------------------------------------
+
 
 // create the SVG object
   var svg = vis.append("svg")
@@ -148,40 +140,43 @@ updateY(data, selectedCat);
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 // x-axis label
-    svg.append("div")
+    svg.append("text")
         .attr("class", "top-label")
-     .append("p")
+        .attr("x", 0)
+        .attr("y", -30)
         .text("percent of married women using modern contraception");
 
 // FILTER THE DATA
 // Outer g for dots.
     var g = svg.selectAll("g")
-        .data(nested)
+        .data(data)
       .enter().append("g")
       .filter(function(d) {return d.key == selectedCat});
 
-
-
-
-  // g.selectAll("text")
-  // // we are getting the values of the countries like this:
-  // .data(function(d) {return d.values})
-  // .enter()
-  //     .append("text")
-  //     .attr("y", function(d, i) {return i*30 + 100;})
-  //     .attr("x",200)
-  //     .text(function(d) {return d.ave;});
-
-      g.selectAll("circle")
-      // we are getting the values of the countries like this:
-      .data(function(d) {return d.values})
-      .enter()
-          .append("circle")
+      svg.selectAll("circle")
+              .data(data)
+      .enter().append("circle")
+        .filter(function(d) {return d.Category == selectedCat })
+        .filter(function(d) {return d.year == selectedYear })
           .attr("class", "dot")
           .attr("r", radius)
           .attr("cx", function(d) {return x(+d.ave);})
-          .attr("cy", function(d) {return y(d.Variable);})
+          .attr("cy", function(d) {return y(d.Variable) + y.bandwidth()/2;})
           .attr("fill", function(d) {return z(+d.ave);});
+
+
+// nested version
+      // g.selectAll("circle")
+      // .filter(function(d) {return d.year == selectedYear})
+      // // access the inner values:
+      // .data(function(d) {return d.values})
+      // .enter()
+      //     .append("circle")
+      //     .attr("class", "dot")
+      //     .attr("r", radius)
+      //     .attr("cx", function(d) {return x(+d.ave);})
+      //     .attr("cy", function(d) {return y(d.Variable);})
+      //     .attr("fill", function(d) {return z(+d.ave);});
 
 // image
   // var imgs = svg.selectAll("image")
@@ -203,6 +198,55 @@ updateY(data, selectedCat);
   );
 
 
+  // CLICK : select a different category
+  // Every time a button is clicked, do the following:
+  // 1. turn off the old button color
+  // 2. change the button color.
+  // 3. revert to the average value for MCU (transition)
+  // 4. update the y-axis (scales = "free_y")
+  // 5. transition to the new values
+  d3.selectAll("a.button")
+  .on("click", function(d) {
+    selectedCat = this.id;
+
+    console.log(selectedCat);
+
+    // Change the color of the buttons
+    nav.selectAll("a")
+      .style("background-color", function(d,i) {return d.key == selectedCat ? "#dceed7" : "#eee";})
+
+      nav.selectAll("a.button:before")
+        .style("background-color", function(d,i) {return d.key == selectedCat ? "#dceed7" : "#eee";})
+
+    d3.selectAll(".dot")
+      // .filter(this.Category == selectedCat)
+      // .filter(this.year == selectedYear)
+      .transition(2000)
+        // .attr("class", "dot")
+        .attr("r", radius)
+        .attr("cx", function(d) {console.log(d); return x(+d.ave);})
+        .attr("cy", function(d) {return y(d.Variable) + y.bandwidth()/2;})
+        // .attr("fill", function(d) {return z(+d.ave);});
+        .attr("fill", "red")
+  })
+
+
+function changeData() {
+  svg.selectAll("circle")
+          .data(data)
+  .enter().append("circle")
+    .filter(function(d) {return d.Category == "Age";})
+    .filter(function(d) {return d.year == selectedYear })
+    .transition(2000)
+      .attr("class", "dot")
+      .attr("r", radius)
+      .attr("cx", function(d) {return x(+d.ave);})
+      .attr("cy", function(d) {return y(d.Variable) + y.bandwidth()/2;})
+      .attr("fill", function(d) {return z(+d.ave);});
+
+}
+
+changeData();
 
 // create dots.
 
@@ -230,7 +274,7 @@ updateY(data, selectedCat);
   svg.append("g")
     .call(xAxis)
     .attr("class", "x axis")
-    .attr("transform", "translate(0," + -margin.top + ")");
+    .attr("transform", "translate(0," + -margin.top/2 + ")");
 
   svg.append("g")
     .call(yAxis)
