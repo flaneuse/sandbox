@@ -79,7 +79,7 @@ var selectedYear = 2014;
        .key(function(d) { return d.Category })
       //  .key(function(d) { return d.year; })
           // .sortKeys(d3.ascending)
-          .entries(data);
+          .entries(mcuData);
           // console.log(nested)
 
 // NAVBAR ----------------------------------------------------------------------

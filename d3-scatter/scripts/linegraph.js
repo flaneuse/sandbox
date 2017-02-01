@@ -108,7 +108,6 @@ data = data.filter(function(d) {return d.country == "Rwanda"});
 
 // DOMAINS -------------------------------------------------------------------------
 // set the domain (data range) of data
-// ! Note: y domain set after filtering the data.
   x.domain([d3.min(data, function(element) { return element.year; }), d3.max(data, function(element) { return element.year; })]);
   y.domain([0, d3.max(data, function(element) { return element.tfr; })]);
   // z.domain([d3.max(data, function(element) { return element.avg; }), 0]);
@@ -197,7 +196,6 @@ var line = d3.line()
   svg.append("g")
     .call(yAxis)
     .attr("class","y axis")
-    //  .attr("transform", "translate(775,0)");
-    //  .attr("transform", "translate(" + width + margin.left - margin.right + "," + margin.top + ")");
+
 
      });
